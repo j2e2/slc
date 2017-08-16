@@ -1,6 +1,6 @@
 %%% mix-tank.pl
 %%%
-%%% Switching logic
+%%% Switching logic circuit
 %%%  mix tank example
 %%%  Verification of PLC programs, Richard Susta. 
 %%%  http://susta.cz/fel/publications/sustathesis.pdf

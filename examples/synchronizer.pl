@@ -1,7 +1,7 @@
 %%%
 %%% synchronizer.pl
 %%%
-%%% Switching logic
+%%% Switching logic circuit
 %%%   synchronizer example
 %%%
 %%% (c) 2016, xae. Juan José Eraso Escalona

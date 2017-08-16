@@ -1,7 +1,7 @@
 %%%
 %%% r_trig.pl
 %%%
-%%% Switching logic
+%%% Switching logic circuit
 %%%   cal example
 %%%
 %%%   r_trig function as IEC definition
