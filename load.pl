@@ -1,7 +1,7 @@
 %%%
 %%% load.pl
 %%%
-%%% slc
+%%% Switching logic circuit
 %%%   set up file
 %%%
 %%%

@@ -1,7 +1,7 @@
 %%%
 %%% aoboa.pl
 %%%
-%%% Switching logic
+%%% Switching logic circuit
 %%%   and/or before or/and
 %%%
 %%% (c) 2016, xae. Juan José Eraso Escalona

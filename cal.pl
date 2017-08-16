@@ -1,7 +1,7 @@
 %%%
 %%% cal.pl
 %%%
-%%% Switching logic
+%%% Switching logic circuit
 %%%   extend slc via arbitrary prolog terms
 %%%   provides IEC CAL semantics
 %%%

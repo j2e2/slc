@@ -1,7 +1,7 @@
 %%%
 %%% slc-ng.pl
 %%%
-%%% Switching logic
+%%% Switching logic circuit
 %%%   slc interpreter and operators
 %%%
 %%% (c) 2016, xae. Juan José Eraso Escalona
