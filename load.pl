@@ -9,6 +9,9 @@
 %%% 20170815
 %%%
 
+%% Additional operators and terms
+:- ensure_loaded('extra.pl').
+
 %% Parents support
 :- ensure_loaded('aoboa.pl').
 
