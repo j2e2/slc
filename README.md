@@ -24,7 +24,7 @@ Parens are based on lists, so our parens are square parens.
 
 To be done.
 
-## Calling arbitrary prolog terms
+## Calling prolog terms
 To be done.
 
 # Examples
