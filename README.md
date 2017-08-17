@@ -39,11 +39,11 @@ To be done.
 ## Parens
 Parens are based on lists, so our parens are square parens.
 
-**( a[], o[] )**
+**( a[ ], o[ ] )**
 
-**a[]** : *or-before-and*.
+**a[ ]** : *or-before-and*.
 
-**o[]** : *and-before-or*.
+**o[ ]** : *and-before-or*.
 
 
 ## Calling prolog terms
