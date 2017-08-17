@@ -13,7 +13,6 @@ To be done.
 **( a, an, o, on, = )**
 
 **a**, **an** : *conjunction* operations.
-
 Also works as load operation when found as the first operation in a *logic chain*.
 
 **o**, **on** : *or-inclusive* operations.
