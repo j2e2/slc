@@ -12,9 +12,9 @@ To be done.
 ## Basic operators
 ( a, an, o, on, = )
 
-**a**, **an** : *Logical conjunction* operations. Also works as load operation when found as the first operation in a logical chain.
+**a**, **an** : *conjunction* operations. Also works as load operation when found as the first operation in a *logic chain*.
 
-**o**, **on** : *Logical or-inclusive* operations.
+**o**, **on** : *or-inclusive* operations.
 
 **=** : *store* operation.
 
@@ -23,7 +23,7 @@ To be done.
 ## Additional operators and terms
 ( x, xn, s, r, p, n )
 
-**x**, **xn** : *logical or-exclusive* operations.
+**x**, **xn** : *or-exclusive* operations.
 
 
 **s/2**, **s/1** : *set* operation.
