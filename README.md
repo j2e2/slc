@@ -1,5 +1,5 @@
 # slc
-slc, Switching Logic Circuit.
+slc, *Switching Logic Circuit*.
 
 Prolog interpreter easing verifying and modeling of *switching logic* and *PLC* programs.
 
@@ -18,7 +18,6 @@ To be done.
 
 **=** : *store* operation.
 
-To be done.
 
 ## Additional operators and terms
 **( x, xn, s, r, p, n )**
@@ -35,7 +34,6 @@ To be done.
 
 **n/2**, **n/1** : *falling edge* evaluation.
 
-To be done.
 
 ## Parens
 Parens are based on lists, so our parens are square parens.
@@ -46,7 +44,6 @@ Parens are based on lists, so our parens are square parens.
 
 **o[]** : *and-before-or*.
 
-To be done.
 
 ## Calling prolog terms
 **( cal, calc, caln )**
