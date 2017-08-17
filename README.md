@@ -10,7 +10,7 @@ You could get more info at https://j2e2xae.wordpress.com/slc-interprete-prolog/,
 To be done.
 
 ## Basic operators
-( a, an, o, on, = )
+**( a, an, o, on, = )**
 
 **a**, **an** : *conjunction* operations. Also works as load operation when found as the first operation in a *logic chain*.
 
@@ -21,7 +21,7 @@ To be done.
 To be done.
 
 ## Additional operators and terms
-( x, xn, s, r, p, n )
+**( x, xn, s, r, p, n )**
 
 **x**, **xn** : *or-exclusive* operations.
 
@@ -40,7 +40,7 @@ To be done.
 ## Parens
 Parens are based on lists, so our parens are square parens.
 
-( a[], o[] )
+**( a[], o[] )**
 
 **a[]** : *or-before-and*.
 
@@ -49,7 +49,7 @@ Parens are based on lists, so our parens are square parens.
 To be done.
 
 ## Calling prolog terms
-( cal, calc, caln )
+**( cal, calc, caln )**
 
 **cal** : unconditional *call*.
 
