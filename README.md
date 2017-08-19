@@ -17,7 +17,7 @@ The operators *( a, an )* are the only *load* enabled operators and should begin
 
 The *store* operators and terms, *( =, s, r, p, n )*, resets *FC*, so a new chain will start at the next *( a, an )*.
 
-The values *0/1* mean *true/false*. 
+The values *1/0* mean *true/false*. 
 
 ## Basic operators
 **( a, an, o, on, = )**
