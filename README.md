@@ -7,7 +7,15 @@ Prolog interpreter easing verifying and modeling of *switching logic* and *PLC* 
 You could get more info at https://j2e2xae.wordpress.com/slc-interprete-prolog/, a blog in spanish language.
 
 # Operators and syntax
-To be done.
+slc is a stateful interpreter, the internal state comprises the flags **FC**,*First Consult*, and **RLO**, *Result of Last Operation*.
+
+**FC**, determines when logic chain starts so *RLO* should be loaded.
+
+**RLO**, works as an accumulator.
+
+The operators *( a, an )* are the only *load* enabled operators and should begin a logic chain if *FC* is *false*, from there on, the rest operators in the chain update *RLO* with it's results.
+
+The *store* operators and terms, *( =, s, r, p, n )*, resets *FC*, so a new chain will start at the next *( a, an )*.
 
 ## Basic operators
 **( a, an, o, on, = )**
