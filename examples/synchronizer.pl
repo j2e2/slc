@@ -104,6 +104,7 @@ synchronizer( CLOCK
         ]).
 %% Only interested in blinker and lamp
 %% Security properties testing
+%%     Lamp and blinker are edge synchronized 
 security( (ZBLINKER, BLINKER)
         , (ZLAMP, LAMP) ) :-
     synchronizer( _CLOCK_0
@@ -118,6 +119,10 @@ security( (ZBLINKER, BLINKER)
                 , LAMP ).
 %% Only interested in fault and lamp
 %% Liveness properties testing
+%%     If fault is always off then lamp should eventually go off
+%%
+%%     If fault is eventually always on then lamp should go on
+%%     infinitely many times
 liveness( FAULT
         , (ZLAMP, LAMP) ) :-
     synchronizer( _CLOCK_0
