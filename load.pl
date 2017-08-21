@@ -12,7 +12,7 @@
 %% Additional operators and terms
 :- ensure_loaded('extra.pl').
 
-%% Parents support
+%% Parens support
 :- ensure_loaded('aoboa.pl').
 
 %% Calling prolog terms support
