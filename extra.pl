@@ -26,24 +26,24 @@
 
 %%% Model
 %% x (x, zvke, vke)
-x(1, 0, 1).
-x(0, 1, 1).
-x(0, 0, 0).
-x(1, 1, 0).
+%x(1, 0, 1).
+%x(0, 1, 1).
+%x(0, 0, 0).
+%x(1, 1, 0).
 %% xn (x, zvke, vke)
-xn(1, 0, 0).
-xn(0, 1, 0).
-xn(0, 0, 1).
-xn(1, 1, 1).
+%xn(1, 0, 0).
+%xn(0, 1, 0).
+%xn(0, 0, 1).
+%xn(1, 1, 1).
 
 %%% Extends interpreter
-:- op(100, fx, [ x, xn ]).
+%:- op(100, fx, [ x, xn ]).
 %% x
-xae_slc:slc([x IN|Ts], (RLO, 1)) :-
-        x(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
+%xae_slc:slc([x IN|Ts], (RLO, 1)) :-
+%        x(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
 %% xn
-xae_slc:slc([xn IN|Ts], (RLO, 1)) :-
-        xn(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
+%xae_slc:slc([xn IN|Ts], (RLO, 1)) :-
+%        xn(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
 
 %%%        
 %%% Extending slc via a Prolog term

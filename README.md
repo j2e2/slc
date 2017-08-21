@@ -31,10 +31,7 @@ The values *1/0* mean *true/false*.
 
 
 ## Additional operators and terms
-**( x, xn, s, r, p, n )**
-
-**x**, **xn** : *or-exclusive* operations.
-
+**( s, r, p, n )**
 
 **s/2**, **s/1** : *set* operation.
 
