@@ -16,7 +16,7 @@
  ]
 ).
 
-:- use_module('slc').
+:- use_module(slc).
 
 %%% Extending slc via a Prolog term
 

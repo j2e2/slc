@@ -8,11 +8,12 @@
 %%% 20160813
 %%% 20161913: Fixed,
 %%%             FC in head of = should not care not to be 1.
+%%% 20170823
 %%%
 
 :- module('xae_slc',
             [ slc/1
-            , op(100, fx, [a, an, o, on, =])
+              , op(100, fx, [a, an, o, on, =])
             ]
 ).
 
@@ -37,7 +38,7 @@ on(1, 0, 0).
 on(0, 1, 1).
 on(1, 1, 1).
 on(0, 0, 1).
-    
+
 %%% Operators
 :- op(100, fx, [a, an, o, on, =]).
 

@@ -9,7 +9,7 @@
 %%% 20170814
 %%%
 
-:- use_module('slc').
+:- use_module(slc).
 
 %%% Extends slc with cal(ling) a prolog term
 %%% Use cases,

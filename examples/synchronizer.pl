@@ -15,7 +15,7 @@
             ]
 ).
 
-:- use_module('slc').
+:- use_module(slc).
 
 %%% LD circuit
 %%%    Best with a fixed font
@@ -126,13 +126,13 @@ security( (ZBLINKER, BLINKER)
 liveness( FAULT
         , (ZLAMP, LAMP) ) :-
     synchronizer( _CLOCK_0
-                , (_ZBLINKER_0, _BLINKER_0)
+                , (_ZBLINKER_0, BLINKER_0)
                 , FAULT
-                , (_ZSYNCHRO_0, _SYNCHRO_0)
+                , (_ZSYNCHRO_0, SYNCHRO_0)
                 , ZLAMP ),
     synchronizer( _CLOCK_1
-                , (_BLINKER_0, _BLINKER_1)
+                , (BLINKER_0, _BLINKER_1)
                 , FAULT
-                , (_SYNCHRO_0, _SYNCHRO_1)
+                , (SYNCHRO_0, _SYNCHRO_1)
                 , LAMP ).
             

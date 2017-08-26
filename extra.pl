@@ -4,7 +4,7 @@
 %%% Switching logic circuit
 %%%   slc interpreter additional operators and terms
 %%%     
-%%%     x, xn: xor(n)
+%%%     x[], xn: xor(n)
 %%%
 %%%     s/2, s/1: set
 %%%     r/2, r/1: reset
@@ -17,7 +17,10 @@
 %%% 20170816
 %%%
 
-:- use_module('slc').
+:- use_module(slc).
+
+% parens
+:- ensure_loaded(aoboa.pl).
 
 %%%    
 %%% Extends slc via operator
@@ -26,24 +29,27 @@
 
 %%% Model
 %% x (x, zvke, vke)
-%x(1, 0, 1).
-%x(0, 1, 1).
-%x(0, 0, 0).
-%x(1, 1, 0).
+xae_slc:x(1, 0, 1).
+xae_slc:x(0, 1, 1).
+xae_slc:x(0, 0, 0).
+xae_slc:x(1, 1, 0).
 %% xn (x, zvke, vke)
-%xn(1, 0, 0).
-%xn(0, 1, 0).
-%xn(0, 0, 1).
-%xn(1, 1, 1).
+xae_slc:xn(1, 0, 0).
+xae_slc:xn(0, 1, 0).
+xae_slc:xn(0, 0, 1).
+xae_slc:xn(1, 1, 1).
 
 %%% Extends interpreter
-%:- op(100, fx, [ x, xn ]).
-%% x
-%xae_slc:slc([x IN|Ts], (RLO, 1)) :-
-%        x(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
+:- op(100, fx, [ x, xn ]).
+
+%% x/x[]
+xae_slc:slc([x IN|Ts], (RLO, 1)) :-
+    aoboa(IN, Ts, RLO, xae_slc:x).
+
 %% xn
-%xae_slc:slc([xn IN|Ts], (RLO, 1)) :-
-%        xn(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
+xae_slc:slc([xn IN|Ts], (RLO, 1)) :-
+        xae_slc:xn(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
+
 
 %%%        
 %%% Extending slc via a Prolog term
@@ -82,29 +88,28 @@ xae_slc:slc([r(OUT)|Ts], (RLO, _FC)) :-
 
 %%% Models
 %% p (in, zq, q)
-p(IN, ZQ, Q) :-
-    xae_slc:an(ZQ, 1, VKE),
-    xae_slc:a(VKE, IN, Q).
+p(IN, ZIN, Q) :-
+    xae_slc:an(ZIN, IN, Q).
+
 %% n (in, zq, q)
-n(IN, ZQ, Q) :-
-    xae_slc:an(IN, 1, VKE),
-    xae_slc:a(VKE, ZQ, Q).
+n(IN, ZIN, Q) :-
+    xae_slc:an(IN, ZIN, Q).
 
 %%% Prototypes for slc  
-p(_ZOUT, _OUT).
-n(_ZOUT, _OUT).
+p(_ZIN, _OUT).
+n(_ZIN, _OUT).
 
 p(_OUT).
 n(_OUT).
 
 %%% Extending
 %% p 
-xae_slc:slc([p(ZOUT, OUT)|Ts], (RLO, _FC)) :-
-    p(RLO, ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
+xae_slc:slc([p(ZIN, OUT)|Ts], (RLO, _FC)) :-
+    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
 xae_slc:slc([p(OUT)|Ts], (RLO, _FC)) :-
-    p(RLO, _ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
+    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
 %% n 
-xae_slc:slc([n(ZOUT, OUT)|Ts], (RLO, _FC)) :- 
-    n(RLO, ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
+xae_slc:slc([n(ZIN, OUT)|Ts], (RLO, _FC)) :- 
+    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
 xae_slc:slc([n(OUT)|Ts], (RLO, _FC)) :- 
-    n(RLO, _ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
+    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).

@@ -10,7 +10,7 @@
 %%% 20170814
 %%%
 
-:- use_module('slc').
+:- use_module(slc).
 
 %%% r_trig
 %%%     rising edge evaluation

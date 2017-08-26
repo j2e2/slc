@@ -10,11 +10,8 @@
 %%%
 
 %% Additional operators and terms
-:- ensure_loaded('extra.pl').
-
-%% Parens support
-:- ensure_loaded('aoboa.pl').
+:- ensure_loaded(extra).
 
 %% Calling prolog terms support
-:- ensure_loaded('cal.pl').
+:- ensure_loaded(cal).
 

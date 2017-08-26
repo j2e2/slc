@@ -31,6 +31,13 @@ The values *1/0* mean *true/false*.
 
 
 ## Additional operators and terms
+
+**( x[], xn, )**
+
+**x[]** : xor operation, could use parens.
+
+**xn** : inequality. dual of xor.
+
 **( s, r, p, n )**
 
 **s/2**, **s/1** : *set* operation.

@@ -11,12 +11,12 @@
 %%%             initial state (0, 0), as a complete program.
 %%%
 
-:- use_module('slc').
+:- use_module(slc).
 
 %%% Extends slc with parens, squared, evaluation
 %%% Use cases,
 %%%    ..., a [.,.], ...
-%%%    ..., o ([.,.]), ...
+%%%    ..., o [.,.], ...
 
 %%% Extending interpreter
 
