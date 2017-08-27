@@ -4,7 +4,7 @@
 %%% Switching logic circuit
 %%%   slc interpreter and operators
 %%%   runs on clpb library, using a local copy.
-%%%   A local copy is used as the supplied with Debian 8 is outdated.
+%%%   A local copy is used as the supplied with Debian 9 is outdated.
 %%%
 %%% (c) 2017, xae. Juan José Eraso Escalona
 %%% 20170825
