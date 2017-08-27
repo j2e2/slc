@@ -83,8 +83,8 @@ slc([= OUT|Ts], (RLO, _FC)) :-
 aoboa(IN, Ts, RLO, OP) :-
     is_list(IN) 
     ->  lists:append(IN, [= ARLO], Ys),
-        xae_slc:slc(Ys, (0, 0)), 
+        slc(Ys, (0, 0)), 
         call(OP, RLO, ARLO, Q),
-        xae_slc:slc(Ts, (Q, 1))
+        slc(Ts, (Q, 1))
     ;   call(OP, IN, RLO, Q),
-        xae_slc:slc(Ts, (Q, 1)).
+        slc(Ts, (Q, 1)).
