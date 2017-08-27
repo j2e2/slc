@@ -20,7 +20,7 @@
 :- use_module(slc).
 
 % parens
-:- ensure_loaded(aoboa.pl).
+:- ensure_loaded(aoboa).
 
 %%%    
 %%% Extends slc via operator
