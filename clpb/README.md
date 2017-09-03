@@ -9,4 +9,4 @@ See, [slc/README.md](https://github.com/j2e2/slc/blob/master/README.md)
 
 Notes:
    
-   *Debian 9* ships with an outdated version of this library, so I'm using a local copy instead of the one shipped with the package *SWI-Prolog*.
+   clpb, *Debian 9* ships with an outdated version of this library, so I'm using a local copy instead of the one shipped with the package *SWI-Prolog*.
