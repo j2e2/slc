@@ -67,7 +67,7 @@ Parens are based on lists, so our parens are square parens.
 
 **calc** : *call* if *true*.
 
-**calln** : *call* if *false*.
+**caln** : *call* if *false*.
 
 # Examples
 To be done.
