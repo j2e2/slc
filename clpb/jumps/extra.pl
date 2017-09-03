@@ -9,8 +9,8 @@
 %%%     s/2, s/1: set
 %%%     r/2, r/1: reset
 %%%
-%%%     p/2, p/1: rising edge
-%%%     n/2, n/1: falling edge
+%%%     p: rising edge
+%%%     n: falling edge
 %%%
 %%% (c) 2017, xae. Juan José Eraso Escalona
 %%%
@@ -90,21 +90,17 @@ p(IN, ZIN, Q) :-
 n(IN, ZIN, Q) :-
    sat(Q =:= ~IN * ZIN).
 
-%%% Prototypes for slc  
-p(_ZIN, _OUT).
-n(_ZIN, _OUT).
-
-p(_OUT).
-n(_OUT).
-
 %%% Extending
+
+:- op(100, fx, [ p, n ]).
+
 %% p 
-xae_slc:slc([p(ZIN, OUT)|Ts], (RLO, _FC)) :-
-    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
-xae_slc:slc([p(OUT)|Ts], (RLO, _FC)) :-
-    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
+xae_slc:slc([p ZIN|Ts], (RLO, _FC)) :-
+    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+xae_slc:slc([p |Ts], (RLO, _FC)) :-
+    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
 %% n 
-xae_slc:slc([n(ZIN, OUT)|Ts], (RLO, _FC)) :- 
-    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
-xae_slc:slc([n(OUT)|Ts], (RLO, _FC)) :- 
-    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (RLO, 0)).
+xae_slc:slc([n ZIN|Ts], (RLO, _FC)) :- 
+    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+xae_slc:slc([n |Ts], (RLO, _FC)) :- 
+    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).

@@ -45,9 +45,9 @@ The values *1/0* mean *true/false*.
 **r/2**. **r/1** : *reset* operation.
 
 
-**p/2**, **p/1** : *rising edge* evaluation.
+**p** : *rising edge* evaluation.
 
-**n/2**, **n/1** : *falling edge* evaluation.
+**n** : *falling edge* evaluation.
 
 
 ## Parens
