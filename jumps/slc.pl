@@ -21,25 +21,17 @@
 
 %%% Definitional method models
 %% a (x, zvke, vke)
-a(1, 1, 1).
-a(0, 1, 0).
-a(0, 0, 0).
-a(1, 0, 0).
+a(1, X, X).
+a(0, _, 0).
 %% an (x, zvke, vke)
-an(0, 1, 1).
-an(1, 1, 0).
-an(1, 0, 0).
-an(0, 0, 0).
+an(0, X, X).
+an(1, _, 0).
 %% o (x, zvke, vke)
-o(0, 0, 0).
-o(1, 0, 1).
-o(1, 1, 1).
-o(0, 1, 1).
+o(0, X, X).
+o(1, _, 1).
 %% on (x, zvke, vke)
-on(1, 0, 0).
-on(0, 1, 1).
-on(1, 1, 1).
-on(0, 0, 1).
+on(1, X, X).
+on(0, _, 1).
 
 %%% Operators
 :- op(100, fx, [a, an, o, on, =]).

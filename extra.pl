@@ -29,15 +29,14 @@
 
 %%% Model
 %% x (x, zvke, vke)
-xae_slc:x(1, 0, 1).
-xae_slc:x(0, 1, 1).
-xae_slc:x(0, 0, 0).
+xae_slc:x(0, X, X).
 xae_slc:x(1, 1, 0).
+xae_slc:x(1, 0, 1).
+
 %% xn (x, zvke, vke)
-xae_slc:xn(1, 0, 0).
-xae_slc:xn(0, 1, 0).
+xae_slc:xn(1, X, X).
 xae_slc:xn(0, 0, 1).
-xae_slc:xn(1, 1, 1).
+xae_slc:xn(0, 1, 0).
 
 %%% Extends interpreter
 :- op(100, fx, [ x, xn ]).
