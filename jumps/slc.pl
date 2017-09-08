@@ -13,7 +13,7 @@
 
 :- module('xae_slc',
             [ slc/1
-              , op(100, fx, [a, an, o, on, =])
+              , op(100, fx, [a, an, o, on, =, \=])
               , op(100, fx, [jmp, jmpc, jmpn])
               , op(100, xf, [:])
             ]
@@ -34,7 +34,7 @@ on(1, X, X).
 on(0, _, 1).
 
 %%% Operators
-:- op(100, fx, [a, an, o, on, =]).
+:- op(100, fx, [a, an, o, on, =, \=]).
 :- op(100, fx, [jmp, jmpc, jmpn]).
 :- op(100, xf, [:]).
 
@@ -78,6 +78,9 @@ slc([on IN|Ts], (RLO, 1, SEGS)) :-
 %% =
 slc([= OUT|Ts], (RLO, _FC, SEGS)) :-
     a(RLO, 1, OUT), slc(Ts, (RLO, 0, SEGS)).
+%% \=
+slc([\= OUT|Ts], (RLO, _FC, SEGS)) :-
+    an(RLO, 1, OUT), slc(Ts, (RLO, 0, SEGS)).
 
 %%% Jumps
 %% labels

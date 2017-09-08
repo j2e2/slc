@@ -13,7 +13,7 @@
 
 :- module('xae_slc',
             [ slc/1
-              , op(100, fx, [a, an, o, on, =])
+              , op(100, fx, [a, an, o, on, =, \=])
             ]
 ).
 
@@ -32,7 +32,7 @@ on(1, X, X).
 on(0, _, 1).
 
 %%% Operators
-:- op(100, fx, [a, an, o, on, =]).
+:- op(100, fx, [a, an, o, on, =, \=]).
 
 %%% SLC interpreter
 %%% Accumulator based,
@@ -66,3 +66,6 @@ slc([on IN|Ts], (RLO, 1)) :-
 %% =
 slc([= OUT|Ts], (RLO, _FC)) :-
     a(RLO, 1, OUT), slc(Ts, (RLO, 0)).
+%% \=
+slc([\= OUT|Ts], (RLO, _FC)) :-
+    an(RLO, 1, OUT), slc(Ts, (RLO, 0)).

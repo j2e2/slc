@@ -13,7 +13,7 @@
 
 :- module('xae_slc',
             [ slc/1
-              , op(100, fx, [a, an, o, on, =])
+              , op(100, fx, [a, an, o, on, =, \=])
               , op(100, fx, [jmp, jmpc, jmpn])
               , op(100, xf, [:])
             ]
@@ -34,7 +34,7 @@ on(X, ZVKE, VKE) :-
     sat(VKE =:= (~X + ZVKE)).
 
 %%% Operators
-:- op(100, fx, [a, an, o, on, =]).
+:- op(100, fx, [a, an, o, on, =, \=]).
 :- op(100, fx, [jmp, jmpc, jmpn]).
 :- op(100, xf, [:]).
 
@@ -81,6 +81,9 @@ slc([on IN|Ts], (RLO, 1, SEGS)) :-
 %% =
 slc([= OUT|Ts], (RLO, _FC, SEGS)) :-
     a(RLO, 1, OUT), slc(Ts, (RLO, 0, SEGS)).
+%% \=
+slc([\= OUT|Ts], (RLO, _FC, SEGS)) :-
+    an(RLO, 1, OUT), slc(Ts, (RLO, 0, SEGS)).
 
 %%% Metapredicate, parens evaluation
 %% IN,
