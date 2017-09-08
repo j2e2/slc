@@ -29,7 +29,7 @@ The values *1/0* mean *true/false*.
 
 **=** : *store* operation.
 
-**\=** : *store*, negated, operation.
+**\\=** : *store*, negated, operation.
 
 
 ## Additional operators and terms
