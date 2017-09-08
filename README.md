@@ -20,7 +20,7 @@ The *store* operators and terms, *( =, s, r, p, n )*, resets *FC*, so a new chai
 The values *1/0* mean *true/false*. 
 
 ## Basic operators
-**( a, an, o, on, = )**
+**( a, an, o, on, =, \\= )**
 
 **a**, **an** : *conjunction* operations.
 >Also works as load operation when found at the first operation in a *logic chain*.
