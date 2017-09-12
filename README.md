@@ -32,6 +32,16 @@ The values *1/0* mean *true/false*.
 **\\=** : *store*, negated, operation.
 
 
+## Parens
+Parens are based on lists, so our parens are square parens.
+
+**( a[ ], o[ ] )**
+
+**a[ ]** : *or-before-and*.
+
+**o[ ]** : *and-before-or*.
+
+
 ## Additional operators and terms
 
 **( x[], xn, )**
@@ -50,16 +60,6 @@ The values *1/0* mean *true/false*.
 **p** : *rising edge* evaluation.
 
 **n** : *falling edge* evaluation.
-
-
-## Parens
-Parens are based on lists, so our parens are square parens.
-
-**( a[ ], o[ ] )**
-
-**a[ ]** : *or-before-and*.
-
-**o[ ]** : *and-before-or*.
 
 
 ## Calling prolog terms
