@@ -60,7 +60,7 @@ Parens are based on lists, so our parens are square parens.
 
 **n** : *falling edge* evaluation.
 
-**( set, clr)**
+**( set, clr )**
 
 **set** : sets *RLO* flag.
 
