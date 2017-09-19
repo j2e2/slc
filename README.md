@@ -41,9 +41,9 @@ Parens are based on lists, so our parens are square parens.
 
 **( a[ ], o[ ] )**
 
-**a[ ]** : *or-before-and*.
+**a[ ]** : *and-before-or*.
 
-**o[ ]** : *and-before-or*.
+**o[ ]** : *or-before-and*.
 
 
 ## Additional operators and terms
