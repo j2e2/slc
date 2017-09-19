@@ -15,7 +15,11 @@ slc is a stateful interpreter, the internal state comprises the flags **FC**,*Fi
 
 The operators *( a, an )* are the only *load* enabled operators and should begin a logic chain if *FC* is *false*, from there on, the rest operators in the chain update *RLO* with it's results.
 
-The *store* operators and terms, *( =, s, r, p, n )*, resets *FC*, so a new chain will start at the next *( a, an )*.
+The *store* operators and terms, *( =, \\=, s, r )*, resets *FC*, so a new chain will start at the next *( a, an )*.
+
+Flag *RLO* could be assigned with the terms *( set, clr )*.
+
+There are support for parens evaluation on operators *( a, o, x )*.
 
 The values *1/0* mean *true/false*. 
 
