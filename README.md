@@ -27,7 +27,7 @@ The values *1/0* mean *true/false*.
 **( a, an, o, on, =, \\= )**
 
 **a**, **an** : *conjunction* operations.
->Also works as load operation when found at the first operation in a *logic chain*.
+>Also works as load when found at the first operation in a *logic chain*.
 
 **o**, **on** : *or-inclusive* operations.
 
