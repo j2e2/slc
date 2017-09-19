@@ -51,7 +51,7 @@ Parens are based on lists, so our parens are square parens.
 
 **x[]** : xor operation, could use parens.
 
-**xn** : inequality. dual of xor.
+**xn** : dual of xor.
 
 **( s, r, p, n )**
 
