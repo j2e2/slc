@@ -90,18 +90,33 @@ p(IN, ZIN, Q) :-
 n(IN, ZIN, Q) :-
    sat(Q =:= ~IN * ZIN).
 
-
 %%% Extending
-
 :- op(100, fx, [ p, n ]).
 
 %% p 
 xae_slc:slc([p ZIN|Ts], (RLO, _FC)) :-
-    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
 xae_slc:slc([p |Ts], (RLO, _FC)) :-
-    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
 %% n 
 xae_slc:slc([n ZIN|Ts], (RLO, _FC)) :- 
-    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
 xae_slc:slc([n |Ts], (RLO, _FC)) :- 
-    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
+
+%%%
+%%% Setting/Clearing RLO
+%%%
+
+%%% Prototype
+set.
+
+clr.
+
+%% set
+xae_slc:slc([set|Ts], (_RLO, _FC)) :-
+    xae_slc:slc(Ts, (1, 1)).
+
+%% clr
+xae_slc:slc([clr|Ts], (_RLO, _FC)) :-
+    xae_slc:slc(Ts, (0, 1)).

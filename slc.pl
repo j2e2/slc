@@ -1,15 +1,15 @@
-%%%
-%%% slc.pl
-%%%
-%%% Switching logic circuit
-%%%   slc interpreter and operators
-%%%
-%%% (c) 2016, xae. Juan José Eraso Escalona
-%%% 20160813
-%%% 20161913: Fixed,
-%%%             FC in head of = should not care not to be 1.
-%%% 20170823
-%%%
+%%%%
+%%%% slc.pl
+%%%%
+%%%% Switching logic circuit
+%%%%   slc interpreter and operators
+%%%%
+%%%% (c) 2016, xae. Juan José Eraso Escalona
+%%%% 20160813
+%%%% 20161913: Fixed,
+%%%%             FC in head of = should not care not to be 1.
+%%%% 20170823
+%%%%
 
 :- module('xae_slc',
             [ slc/1

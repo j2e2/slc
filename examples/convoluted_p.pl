@@ -44,7 +44,7 @@ convoluted_p(CLK, ZCLK_F, CLK_F, ZQ, Q) :-
                 s(ZCLK_F, M),   % Store that CLK was false
                 a  ZQ,
                 r(M, CLK_F),    % Clear on rising edge
-                a  CLK,          % Evaluate edge value
+                a  CLK,         % Evaluate edge value
                 a  CLK_F,
                 =  Q
               ]).

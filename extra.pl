@@ -1,25 +1,25 @@
-%%%
-%%% extra.pl
-%%%
-%%% Switching logic circuit
-%%%   slc interpreter additional operators and terms
-%%%     
-%%%     x[], xn: xor(n)
-%%%
-%%%     s/2, s/1: set
-%%%     r/2, r/1: reset
-%%%
-%%%     p: rising edge
-%%%     n: falling edge
-%%%
-%%% (c) 2017, xae. Juan José Eraso Escalona
-%%%
-%%% 20170816
-%%%
+%%%%
+%%%% extra.pl
+%%%%
+%%%% Switching logic circuit
+%%%%   slc interpreter additional operators and terms
+%%%%     
+%%%%     x[], xn: xor(n)
+%%%%
+%%%%     s/2, s/1: set
+%%%%     r/2, r/1: reset
+%%%%
+%%%%     p: rising edge
+%%%%     n: falling edge
+%%%%
+%%%% (c) 2017, xae. Juan José Eraso Escalona
+%%%%
+%%%% 20170816
+%%%%
 
 :- use_module(slc).
 
-% parens
+%%% parens
 :- ensure_loaded(aoboa).
 
 %%%    
@@ -95,16 +95,32 @@ n(IN, ZIN, Q) :-
     xae_slc:an(IN, ZIN, Q).
 
 %%% Extending
-
 :- op(100, fx, [ p, n ]).
 
 %% p 
 xae_slc:slc([p ZIN|Ts], (RLO, _FC)) :-
-    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
 xae_slc:slc([p |Ts], (RLO, _FC)) :-
-    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
 %% n 
 xae_slc:slc([n ZIN|Ts], (RLO, _FC)) :- 
-    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
 xae_slc:slc([n |Ts], (RLO, _FC)) :- 
-    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 0)).
+    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
+
+%%%
+%%% Setting/Clearing RLO
+%%%
+
+%%% Prototype
+set.
+
+clr.
+
+%% set
+xae_slc:slc([set|Ts], (_RLO, _FC)) :-
+    xae_slc:slc(Ts, (1, 1)).
+
+%% clr
+xae_slc:slc([clr|Ts], (_RLO, _FC)) :-
+    xae_slc:slc(Ts, (0, 1)).

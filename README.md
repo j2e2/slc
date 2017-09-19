@@ -43,7 +43,6 @@ Parens are based on lists, so our parens are square parens.
 
 
 ## Additional operators and terms
-
 **( x[], xn, )**
 
 **x[]** : xor operation, could use parens.
@@ -61,6 +60,11 @@ Parens are based on lists, so our parens are square parens.
 
 **n** : *falling edge* evaluation.
 
+**( set, clr)**
+
+**set** : sets *RLO* flag.
+
+**clr** : clears *RLO* flag.
 
 ## Calling prolog terms
 **( cal, calc, caln )**
