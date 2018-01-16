@@ -1,4 +1,6 @@
 # slc, jump operations enabled
+
+*** For now, jumping in forward direction is okay, jumping backward to an assignmet operation shows up as false ***
 This is a version of [**slc**](https://github.com/j2e2/slc) that supports (un)conditional jumps to label.
 
 **( :, jmp, jmpc, jmpn )**
