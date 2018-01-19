@@ -10,3 +10,5 @@ See, [slc/README.md](https://github.com/j2e2/slc/blob/master/README.md)
 Notes:
    
    clpb, *Debian 9* ships with an outdated version of this library, so I'm using a local copy instead of the one shipped with the package *SWI-Prolog*.
+
+   Take into account that jumping to a reassigment should result in a false value.
