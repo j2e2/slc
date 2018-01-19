@@ -18,6 +18,6 @@ See, [slc/README.md](https://github.com/j2e2/slc/blob/master/README.md)
 
 Notes:
 
-    Take into account that jumping to a reassigment should result in a false value.
+   Take into account that jumping to a reassigment should result in a false value.
 
 
