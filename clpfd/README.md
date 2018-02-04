@@ -7,5 +7,4 @@ This supports all the operators and terms of the original, non constrained.
 
 See, [slc/README.md](https://github.com/j2e2/slc/blob/master/README.md)
 
-Notes:
 
