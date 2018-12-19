@@ -22,11 +22,11 @@
 
 %% a/a[]
 xae_slc:slc([a IN|Ts], (RLO, 1, SEGS)) :-
-    aoboa(IN, Ts, RLO, SEGS, xae_slc:a).
+    is_list(IN), aoboa(IN, Ts, RLO, SEGS, xae_slc:a).
 
 %% o/o[]
 xae_slc:slc([o IN|Ts], (RLO, 1, SEGS)) :-
-    aoboa(IN, Ts, RLO, SEGS, xae_slc:o).
+    is_list(IN), aoboa(IN, Ts, RLO, SEGS, xae_slc:o).
     
 %%% Metapredicate
 %% IN,
@@ -35,11 +35,7 @@ xae_slc:slc([o IN|Ts], (RLO, 1, SEGS)) :-
 %% OP,
 %%    selects and/or semantics.
 aoboa(IN, Ts, RLO, SEGS, OP) :-
-    is_list(IN) 
-    ->  lists:append(IN, [= ARLO], Ys),
-        xae_slc:slc(Ys, (0, 0, SEGS)), 
-        call(OP, RLO, ARLO, Q),
-        xae_slc:slc(Ts, (Q, 1, SEGS))
-    ;   call(OP, IN, RLO, Q),
-        xae_slc:slc(Ts, (Q, 1, SEGS)).
-    
+    lists:append(IN, [= ARLO], Ys),
+    xae_slc:slc(Ys, (0, 0, SEGS)), 
+    call(OP, RLO, ARLO, Q),
+    xae_slc:slc(Ts, (Q, 1, SEGS)).

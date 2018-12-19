@@ -8,7 +8,8 @@
 %%% 20160813
 %%% 20161913: Fixed,
 %%%             FC in head of = should not care not to be 1.
-%%% 20170823
+%%% 20181812: Fixed, multiple solutions in no parens
+%%%				aoboa only in list case
 %%%
 
 :- module('xae_slc',
@@ -21,17 +22,20 @@
 
 %%% Definitional method models
 %% a (x, zvke, vke)
-a(1, X, X).
 a(0, _, 0).
+a(1, X, X).
+
 %% an (x, zvke, vke)
-an(0, X, X).
 an(1, _, 0).
+an(0, X, X).
+
 %% o (x, zvke, vke)
-o(0, X, X).
 o(1, _, 1).
+o(0, X, X).
+
 %% on (x, zvke, vke)
-on(1, X, X).
 on(0, _, 1).
+on(1, X, X).
 
 %%% Operators
 :- op(100, fx, [a, an, o, on, =, \=]).

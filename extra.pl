@@ -29,21 +29,21 @@
 
 %%% Model
 %% x (x, zvke, vke)
-xae_slc:x(0, X, X).
 xae_slc:x(1, 1, 0).
 xae_slc:x(1, 0, 1).
+xae_slc:x(0, X, X).
 
 %% xn (x, zvke, vke)
-xae_slc:xn(1, X, X).
 xae_slc:xn(0, 0, 1).
 xae_slc:xn(0, 1, 0).
+xae_slc:xn(1, X, X).
 
 %%% Extends interpreter
 :- op(100, fx, [ x, xn ]).
 
 %% x/x[]
 xae_slc:slc([x IN|Ts], (RLO, 1)) :-
-    aoboa(IN, Ts, RLO, xae_slc:x).
+    is_list(IN), aoboa(IN, Ts, RLO, xae_slc:x).
 
 %% xn
 xae_slc:slc([xn IN|Ts], (RLO, 1)) :-
