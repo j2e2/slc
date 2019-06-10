@@ -8,8 +8,7 @@
 %%% 20160813
 %%% 20161913: Fixed,
 %%%             FC in head of = should not care not to be 1.
-%%% 20181812: Fixed, multiple solutions in no parens
-%%%				aoboa only in list case
+%%% 20170823
 %%%
 
 :- module('xae_slc',
@@ -68,10 +67,11 @@ slc([an IN|Ts], (_RLO, 0, SEGS)) :-
     an(IN, 1, Q), slc(Ts, (Q, 1, SEGS)).
 %% a/a[]
 xae_slc:slc([a IN|Ts], (RLO, 1, SEGS)) :-
-    is_list(IN), aoboa(IN, Ts, RLO, SEGS, xae_slc:a).
+    aoboa(IN, Ts, RLO, SEGS, xae_slc:a).
+
 %% o/o[]
 xae_slc:slc([o IN|Ts], (RLO, 1, SEGS)) :-
-    is_list(IN), aoboa(IN, Ts, RLO, SEGS, xae_slc:o).
+    aoboa(IN, Ts, RLO, SEGS, xae_slc:o).
 %% an
 slc([an IN|Ts], (RLO, 1, SEGS)) :-
     an(IN, RLO, Q), slc(Ts, (Q, 1, SEGS)).
@@ -92,10 +92,13 @@ slc([\= OUT|Ts], (RLO, _FC, SEGS)) :-
 %% OP,
 %%    selects and/or semantics.
 aoboa(IN, Ts, RLO, SEGS, OP) :-
-    lists:append(IN, [= ARLO], Ys),
-    slc(Ys, (0, 0, SEGS)), 
-    call(OP, RLO, ARLO, Q),
-    slc(Ts, (Q, 1, SEGS)).
+    is_list(IN) 
+    ->  lists:append(IN, [= ARLO], Ys),
+        slc(Ys, (0, 0, SEGS)), 
+        call(OP, RLO, ARLO, Q),
+        slc(Ts, (Q, 1, SEGS))
+    ;   call(OP, IN, RLO, Q),
+        slc(Ts, (Q, 1, SEGS)).
 
 %%% Jumps
 %% labels

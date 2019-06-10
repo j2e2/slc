@@ -9,8 +9,6 @@
 %%% 20170709: Fixed,
 %%%             aoboa, call to slc with IN as in list case should have
 %%%             initial state (0, 0), as a complete program.
-%%% 20181812: Fixed, multiple solutions in no parens
-%%%				aoboa only in list case
 %%%
 
 :- use_module(slc).
@@ -24,11 +22,11 @@
 
 %% a/a[]
 xae_slc:slc([a IN|Ts], (RLO, 1)) :-
-    is_list(IN), aoboa(IN, Ts, RLO, xae_slc:a).
+    aoboa(IN, Ts, RLO, xae_slc:a).
 
 %% o/o[]
 xae_slc:slc([o IN|Ts], (RLO, 1)) :-
-    is_list(IN), aoboa(IN, Ts, RLO, xae_slc:o).
+    aoboa(IN, Ts, RLO, xae_slc:o).
     
 %%% Metapredicate
 %% IN,
@@ -37,8 +35,11 @@ xae_slc:slc([o IN|Ts], (RLO, 1)) :-
 %% OP,
 %%    selects and/or semantics.
 aoboa(IN, Ts, RLO, OP) :-
-    lists:append(IN, [= ARLO], Ys),
-    xae_slc:slc(Ys, (0, 0)), 
-    call(OP, RLO, ARLO, Q),
-    xae_slc:slc(Ts, (Q, 1)).
+    is_list(IN) 
+    ->  lists:append(IN, [= ARLO], Ys),
+        xae_slc:slc(Ys, (0, 0)), 
+        call(OP, RLO, ARLO, Q),
+        xae_slc:slc(Ts, (Q, 1))
+    ;   call(OP, IN, RLO, Q),
+        xae_slc:slc(Ts, (Q, 1)).
     

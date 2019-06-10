@@ -19,20 +19,17 @@
 
 %%% Definitional method models
 %% a (x, zvke, vke)
-a(0, _, 0).
 a(1, X, X).
-
+a(0, _, 0).
 %% an (x, zvke, vke)
-an(1, _, 0).
 an(0, X, X).
-
+an(1, _, 0).
 %% o (x, zvke, vke)
-o(1, _, 1).
 o(0, X, X).
-
+o(1, _, 1).
 %% on (x, zvke, vke)
-on(0, _, 1).
 on(1, X, X).
+on(0, _, 1).
 
 %%% Operators
 :- op(100, fx, [a, an, o, on, =, \=]).
@@ -68,7 +65,7 @@ slc([on IN|Ts], (RLO, 1)) :-
     on(IN, RLO, Q), slc(Ts, (Q, 1)).
 %% =
 slc([= OUT|Ts], (RLO, _FC)) :-
-    a(1, RLO, OUT), slc(Ts, (RLO, 0)).
+    a(RLO, 1, OUT), slc(Ts, (RLO, 0)).
 %% \=
 slc([\= OUT|Ts], (RLO, _FC)) :-
     an(RLO, 1, OUT), slc(Ts, (RLO, 0)).

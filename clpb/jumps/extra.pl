@@ -39,7 +39,7 @@ xae_slc:xn(X, ZVKE, VKE) :-
 
 %% x/x[]
 xae_slc:slc([x IN|Ts], (RLO, 1, SEGS)) :-
-    is_list(IN), xae_slc:aoboa(IN, Ts, RLO, SEGS, xae_slc:x).
+    xae_slc:aoboa(IN, Ts, RLO, SEGS, xae_slc:x).
 
 %% xn
 xae_slc:slc([xn IN|Ts], (RLO, 1, SEGS)) :-

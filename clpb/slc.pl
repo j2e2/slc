@@ -12,8 +12,6 @@
 %%%             aoboa file deleted,
 %%%                 parens integrated on slc file, as clpb inhibits
 %%%                 the fail mechanism used to select the term doing paren eval
-%%% 20181812: Fixed, multiple solutions in no parens
-%%%				aoboa only in list case
 %%%
 
 :- module('xae_slc',
@@ -61,11 +59,11 @@ slc([an IN|Ts], (_RLO, 0)):-
     an(IN, 1, Q), slc(Ts, (Q, 1)).
 %% a/a[]
 xae_slc:slc([a IN|Ts], (RLO, 1)) :-
-    is_list(IN), aoboa(IN, Ts, RLO, xae_slc:a).
+    aoboa(IN, Ts, RLO, xae_slc:a).
 
 %% o/o[]
 xae_slc:slc([o IN|Ts], (RLO, 1)) :-
-    is_list(IN), aoboa(IN, Ts, RLO, xae_slc:o).
+    aoboa(IN, Ts, RLO, xae_slc:o).
 %% an
 slc([an IN|Ts], (RLO, 1)) :-
     an(IN, RLO, Q), slc(Ts, (Q, 1)).
@@ -86,7 +84,10 @@ slc([\= OUT|Ts], (RLO, _FC)) :-
 %% OP,
 %%    selects and/or semantics.
 aoboa(IN, Ts, RLO, OP) :-
-    lists:append(IN, [= ARLO], Ys),
-     slc(Ys, (0, 0)), 
-     call(OP, RLO, ARLO, Q),
-     slc(Ts, (Q, 1)).
+    is_list(IN) 
+    ->  lists:append(IN, [= ARLO], Ys),
+        slc(Ys, (0, 0)), 
+        call(OP, RLO, ARLO, Q),
+        slc(Ts, (Q, 1))
+    ;   call(OP, IN, RLO, Q),
+        slc(Ts, (Q, 1)).
