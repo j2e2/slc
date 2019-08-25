@@ -1,45 +1,39 @@
-%%%
-%%% cal.pl
-%%%
-%%% Switching logic circuit
-%%%   extend slc via arbitrary prolog terms
-%%%   provides IEC CAL semantics
-%%%
-%%% (c) 2017, xae. Juan José Eraso Escalona
-%%% 20170814
-%%%
+/*
+    cal.pl
 
-:- use_module(slc).
+    Switching logic circuit
+    extend slc via arbitrary prolog terms
+    provides IEC CAL semantics
 
-%%% Extends slc with cal(ling) a prolog term
-%%% Use cases,
-%%%    ..., cal functor(args),...
-%%%    ..., calc functor(args), ...
-%%%    ..., caln functor(args), ...
+    (c) 2017, xae. Juan José Eraso Escalona
+    20170814
+*/
 
-%%% Extending interpreter
+
+% Extends slc with cal(ling) a prolog term
+% Use cases,
+%    ..., cal functor(args),...
+%    ..., calc functor(args), ...
+%    ..., caln functor(args), ...
+
+% Extending interpreter
 :- op(100, fx, [ cal, calc, caln ]).
 
-%% cal
-xae_slc:slc([cal IN|Ts], (RLO, FC)) :-
-    do_cal(IN),
-    xae_slc:slc(Ts, (RLO, FC)).
+% cal
+slc:slc(cal IN, STATE, STATE) :-
+    slc:do_cal(IN).
 
-%% calc
-xae_slc:slc([calc _IN|Ts], (0, _FC)) :-
-    xae_slc:slc(Ts, (0, 0)).
-xae_slc:slc([calc IN|Ts], (1, _FC)) :-   
-    do_cal(IN),
-    xae_slc:slc(Ts, (1, 0)).
+% calc
+slc:slc(calc _IN, (0, _FC), (0, 0)).
+slc:slc(calc IN, (1, _FC), (1, 0)) :-   
+    slc:do_cal(IN).
 
-%% caln
-xae_slc:slc([caln _IN|Ts], (1, _FC)) :-
-    xae_slc:slc(Ts, (1, 0)).
-xae_slc:slc([caln IN|Ts], (0, _FC)) :-
-    do_cal(IN),
-    xae_slc:slc(Ts, (0, 0)).
+% caln
+slc:slc(caln _IN, (1, _FC), (1, 0)).
+slc:slc(caln IN, (0, _FC), (0, 0)) :-
+    slc:do_cal(IN).
 
 % do_cal
-do_cal(IN) :-
-    IN =.. [Functor|Args],
+slc:do_cal(IN) :-
+    IN =.. [Functor | Args],
     apply(Functor, Args).

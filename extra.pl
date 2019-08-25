@@ -1,126 +1,91 @@
-%%%%
-%%%% extra.pl
-%%%%
-%%%% Switching logic circuit
-%%%%   slc interpreter additional operators and terms
-%%%%     
-%%%%     x[], xn: xor(n)
-%%%%
-%%%%     s/2, s/1: set
-%%%%     r/2, r/1: reset
-%%%%
-%%%%     p: rising edge
-%%%%     n: falling edge
-%%%%
-%%%% (c) 2017, xae. Juan José Eraso Escalona
-%%%%
-%%%% 20170816
-%%%%
+/*
+    extra.pl
+
+    Switching logic circuit
+    slc interpreter additional operators and terms
+     
+     s/2, s/1: set
+     r/2, r/1: reset
+
+     p: rising edge
+     n: falling edge
+
+     set: RLO = 1
+     clr: RLO = 0
+
+   (c) 2017, xae. Juan José Eraso Escalona
+
+   20170816
+*/
 
 :- use_module(slc).
 
-%%% parens
-:- ensure_loaded(aoboa).
+% Extending
+:- op(100, fx, [ p, n, s, r ]).
 
-%%%    
-%%% Extends slc via operator
-%%%    Teach slc to use xor
-%%%
-
-%%% Model
-%% x (x, zvke, vke)
-xae_slc:x(0, X, X).
-xae_slc:x(1, 1, 0).
-xae_slc:x(1, 0, 1).
-
-%% xn (x, zvke, vke)
-xae_slc:xn(1, X, X).
-xae_slc:xn(0, 0, 1).
-xae_slc:xn(0, 1, 0).
-
-%%% Extends interpreter
-:- op(100, fx, [ x, xn ]).
-
-%% x/x[]
-xae_slc:slc([x IN|Ts], (RLO, 1)) :-
-    aoboa(IN, Ts, RLO, xae_slc:x).
-
-%% xn
-xae_slc:slc([xn IN|Ts], (RLO, 1)) :-
-        xae_slc:xn(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
-
-
-%%%        
-%%% Extending slc via a Prolog term
-%%%
-
-%%% Models
-%% s (in, zq, q)
+% Models
+% s (in, zq, q)
 s(IN, ZQ, Q) :-
-    xae_slc:o(IN, ZQ, Q).
-%% r (in, zq, q)
+    o(IN, ZQ, Q).
+% r (in, zq, q)
 r(IN, ZQ, Q) :-
-    xae_slc:an(IN, ZQ, Q).
+    an(IN, ZQ, Q).
 
-%%% Prototypes for slc  
-s(_ZOUT, _OUT).
-r(_ZOUT, _OUT).
+% Prototypes 
+s(ZQ, Q) :-
+    o(1, ZQ, Q).
+r(ZQ, Q) :-
+    an(1, ZQ, Q).
 
-s(_OUT).
-r(_OUT).
+s(Q) :-
+    o(1, _ZQ, Q).
+r(Q) :-
+    an(1, _ZQ, Q).
 
-%%% Extending
-%% s 
-xae_slc:slc([s(ZOUT, OUT)|Ts], (RLO, _FC)) :-
-    s(RLO, ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
-xae_slc:slc([s(OUT)|Ts], (RLO, _FC)) :-
-    s(RLO, _ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
-%% r 
-xae_slc:slc([r(ZOUT, OUT)|Ts], (RLO, _FC)) :- 
-    r(RLO, ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
-xae_slc:slc([r(OUT)|Ts], (RLO, _FC)) :- 
-    r(RLO, _ZOUT, OUT), xae_slc:slc(Ts, (RLO, 0)).
+% Extending
+% s 
+slc:slc(s (ZOUT, OUT), (RLO, _FC), (RLO, 0)) :-
+    s(RLO, ZOUT, OUT).
 
-%%%        
-%%% Edge evaluation
-%%%
+% r 
+slc:slc(r (ZOUT, OUT), (RLO, _FC), (RLO, 0)) :- 
+    r(RLO, ZOUT, OUT).
 
-%%% Models
-%% p (in, zq, q)
+       
+% Edge evaluation
+
+% p (in, zq, q)
 p(IN, ZIN, Q) :-
-    xae_slc:an(ZIN, IN, Q).
+    an(ZIN, IN, Q).
 
-%% n (in, zq, q)
+% n (in, zq, q)
 n(IN, ZIN, Q) :-
-    xae_slc:an(IN, ZIN, Q).
+    an(IN, ZIN, Q).
 
-%%% Extending
-:- op(100, fx, [ p, n ]).
+% Prototypes 
+p(IN, Q) :-
+    an(_ZIN, IN, Q).
 
-%% p 
-xae_slc:slc([p ZIN|Ts], (RLO, _FC)) :-
-    p(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
-xae_slc:slc([p |Ts], (RLO, _FC)) :-
-    p(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
-%% n 
-xae_slc:slc([n ZIN|Ts], (RLO, _FC)) :- 
-    n(RLO, ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
-xae_slc:slc([n |Ts], (RLO, _FC)) :- 
-    n(RLO, _ZIN, OUT), xae_slc:slc(Ts, (OUT, 1)).
+n(IN, Q) :-
+    an(IN, _ZIN, Q).
 
-%%%
-%%% Setting/Clearing RLO
-%%%
 
-%%% Prototype
-set.
+% p 
+slc:slc(p ZIN, (RLO, _FC), (OUT, 1)) :-
+    p(RLO, ZIN, OUT).
+slc:slc(p, (RLO, _FC), (OUT, 1)) :-
+    p(RLO, _ZIN, OUT).
+% n 
+slc:slc(n ZIN, (RLO, _FC), (OUT, 1)) :- 
+    n(RLO, ZIN, OUT).
+slc:slc(n, (RLO, _FC), (OUT, 1)) :- 
+    n(RLO, _ZIN, OUT).
 
-clr.
+% Setting/Clearing RLO
 
-%% set
-xae_slc:slc([set|Ts], (_RLO, _FC)) :-
-    xae_slc:slc(Ts, (1, 1)).
+% set
+slc:slc(set, (_RLO, _FC), (1, 1)).
 
-%% clr
-xae_slc:slc([clr|Ts], (_RLO, _FC)) :-
-    xae_slc:slc(Ts, (0, 1)).
+% clr
+slc:slc(clr, (_RLO, _FC), (0, 1)).
+

@@ -1,12 +1,12 @@
-%%%
-%%% synchronizer.pl
-%%%
-%%% Switching logic circuit
-%%%   synchronizer example
-%%%
-%%% (c) 2016, xae. Juan José Eraso Escalona
-%%% 20160814
-%%%
+/*
+    synchronizer.pl
+
+    Switching logic circuit
+    synchronizer example
+
+    (c) 2016, xae. Juan José Eraso Escalona
+    20160814
+*/
 
 :- module('xae_synchronizer',
             [ synchronizer/5 
@@ -15,10 +15,10 @@
             ]
 ).
 
-:- use_module(slc).
+:- use_module(library(slc)).
 
-%%% LD circuit
-%%%    Best with a fixed font
+% LD circuit
+%    Best with a fixed font
 /*
 
 // Blinker
@@ -61,33 +61,17 @@
 */
 
 
-%%% Extends slc via operator·
-%%%    Teach slc to use xor
-
-%%% Model
-%% x (x, zvke, vke)
-x(1, 0, 1).
-x(0, 1, 1).
-x(0, 0, 0).
-x(1, 1, 0).
-
-%%% Extends interpreter
-:- op(100, fx, [ x ]).
-%% x
-xae_slc:slc([x IN|Ts], (RLO, 1)) :-
-        x(IN, RLO, Q), xae_slc:slc(Ts, (Q, 1)).
-    
-%%% Circuit model
+% Circuit model
 synchronizer( CLOCK
             , (ZBLINKER, BLINKER)
             , FAULT
             , (ZSYNCHRO, SYNCHRO)
             , LAMP ) :-
-    slc([   %% Blinker
+    slc([   % Blinker
             a   CLOCK,
             x   ZBLINKER,
             =   BLINKER,
-            %% Synchro
+            % Synchro
             a   CLOCK,
             a   FAULT,
             =   VKE0,
@@ -97,14 +81,14 @@ synchronizer( CLOCK
             a   VKE0,
             o   VKE1,
             =   SYNCHRO,
-            %% Lamp
+            % Lamp
             a   BLINKER,
             a   SYNCHRO,
             =   LAMP
         ]).
-%% Only interested in blinker and lamp
-%% Security properties testing
-%%     Lamp and blinker are edge synchronized 
+% Only interested in blinker and lamp
+% Security properties testing
+%     Lamp and blinker are edge synchronized 
 security( (ZBLINKER, BLINKER)
         , (ZLAMP, LAMP) ) :-
     synchronizer( _CLOCK_0
@@ -117,12 +101,12 @@ security( (ZBLINKER, BLINKER)
                 , _FAULT_1
                 , (SYNCHRO_0, _SYNCHRO_1)
                 , LAMP ).
-%% Only interested in fault and lamp
-%% Liveness properties testing
-%%     If fault is always off then lamp should eventually go off
-%%
-%%     If fault is eventually always on then lamp should go on
-%%     infinitely many times
+% Only interested in fault and lamp
+% Liveness properties testing
+%     If fault is always off then lamp should eventually go off
+%
+%     If fault is eventually always on then lamp should go on
+%     infinitely many times
 liveness( FAULT
         , (ZLAMP, LAMP) ) :-
     synchronizer( _CLOCK_0

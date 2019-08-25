@@ -55,9 +55,9 @@ Parens are based on lists, so our parens are square parens.
 
 **( s, r, p, n )**
 
-**s/2**, **s/1** : *set* operation.
+**s** : *set* operation.
 
-**r/2**. **r/1** : *reset* operation.
+**r** : *reset* operation.
 
 
 **p** : *rising edge* evaluation.
