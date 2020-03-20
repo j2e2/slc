@@ -25,18 +25,49 @@
            , quotient_nth/4     % quotient_nth(+Index, +Val, +TVL, -Result)
            , edis/3             % edis(+TVL, +Term, -Result) 
            , edis_nth/3         % edis_nth(+Index, +TVL, -Result) 
+           , econ/3             % econ(+TVL, +Term, -Result) 
+           , econ_nth/3         % econ_nth(+Index, +TVL, -Result) 
            , absorb/2           % absorb(+TVL, -Result)
            , bcf/2              % bcf(+TVL, -Result)
            , nearly_minimal/2   % nearly_minimal(+TVL, -Result)
-           , on_set/3           % on_set(+TVL, +Index, -Result)
-           , off_set/3          % off_set(+TVL, +Index, -Result)
+           , on_set/3           % on_set(+Index, +TVL, -Result)
+           , off_set/3          % off_set(+Index, +TVL, -Result)
            , on_mark/3          % on_mark(+Index, +TVL, -Result)
            , off_mark/3         % off_mark(+Index, +TVL, -Result)
            , interval/2         % interval(ONSet, OFFSet)
            , minimal_subsets/3  % minimal_subsets(+ONSet, +OFFSet, -Sets)
            ] ).
 
+
 :- use_module(library(yall)).
+
+/*
+    Utilities
+*/
+
+%   until / unless
+%
+%   A structured alternative to Prolog with simple
+%   compositional semantics. ANTÓNIO PORTO. arXiv: 1107.5408
+%
+%   unless made myself, provably wrong
+
+:- op(999, xfx, [until, unless]).
+
+
+Solve until  Stop :- Solve, ( Stop, ! ; true ).
+
+Solve unless Stop :- Solve, ( Stop, !, fail ; true ).
+
+% =memberchk/3
+% =memberchk(?Element, +List, -T) is det
+%   Reified memberchk
+=memberchk(Element, List, T) :-    
+      memberchk(Element, List)
+   ->
+      T = 1
+   ;
+      T = 0.
 
 
 /*
@@ -85,17 +116,18 @@ intersection(As, Bs, Intersections) :-
     tvl_to_list(As, VAs),
     tvl_to_list(Bs, VBs),
     intersection_(VAs, VBs, [], Intersections).
+
 % intersection_/4
 % intersection_(+As, +Bs, +Acc, -Intersections) is det
 intersection_([], _Bs, Acc, Acc) :- !.
 intersection_([A | As], Bs, ZAcc, Intersections) :-
 	foldl( [B, V0, V1] >> ( 
                              intersect(A, B, Result)
-                          ,  \+ compound_name_arity(Result, term, 0)
                           -> V1 = [Result | V0]
                           ;  V1 = V0
                           )
          , Bs, ZAcc, Acc ),
+
     !,
 	intersection_(As, Bs, Acc, Intersections).
 
@@ -105,36 +137,31 @@ intersection_([A | As], Bs, ZAcc, Intersections) :-
 %     Bs, list
 %     Result, term compound
 %
-%     term() as the empty set
+%     fail as the empty set
 intersect(As, Bs, Result) :-
-	intersect_(As, Bs, [], ZResult),
-    compound_name_arguments(Result, term, ZResult).
+	intersect_(As, Bs, ZResult)
+  unless 
+    [] = ZResult
+
+  , Result =.. [term | ZResult].
 
 % intersect_/4
 % intersect_(+Xs, +Ys, +Acc, -Result) is det
-intersect_([], [], Result, Result) :- !.
-intersect_([], _Ys, [], []) :- !.
-intersect_(_Xs, [], [], []) :- !.
-intersect_([X | Xs], [Y | Ys], ZAcc, Result) :-
+intersect_([], [], []).
+intersect_([X | Xs], [Y | Ys], [Y | ZResult]) :-
     var(X),
-	append(ZAcc, [Y], Acc), 
-    !,
-    intersect_(Xs, Ys, Acc, Result).
-intersect_([X | Xs], [Y | Ys], ZAcc, Result) :-
-    var(Y),
-    append(ZAcc, [X], Acc),
-    !,
-    intersect_(Xs, Ys, Acc, Result).
-intersect_([X | _Xs], [Y | _Ys], _Acc, Result) :-
-    X =\= Y, 
-    !,
-    intersect_([], [], [], Result).
-intersect_([X | Xs], [X | Ys], ZAcc, Result) :-
-    % X =:= Y
-    append(ZAcc, [X], Acc),
-    !,
-    intersect_(Xs, Ys, Acc, Result).
 
+    !,
+    intersect_(Xs, Ys, ZResult).
+intersect_([X | Xs], [Y | Ys], [X | ZResult]) :-
+    ( 
+      var(Y)
+    ; 
+      X =:= Y
+    ),
+
+    !,
+    intersect_(Xs, Ys, ZResult).
 
 % Complement
 %           _______
@@ -165,9 +192,7 @@ complement_(Term, Results) :-
     % Term length
     length(Vars, Len),
     % Upto a concrete var
-    findall(Head, append(Head, _, Vars), AllHeads),
-    reverse(AllHeads, [_ | RHeads]),
-    reverse(RHeads, Heads),
+    findall(Head, append(Head, X, Vars) until X = [_], Heads), 
     % Complement var
     foldl( [H, V, V0, V1] >> (
                                 var(V)
@@ -179,6 +204,7 @@ complement_(Term, Results) :-
                                 % Extend upto term length 
  				                ,  append(HC, _, Args)
                                 ,  length(Args, Len) 
+
                                 ,  Complement =.. [term | Args]
                                 ,  V1 = [Complement | V0]
                                 )
@@ -265,6 +291,7 @@ absorb_(Result, [], Result) :- !.
 absorb_(ZHs, [C | ZTs],  Result) :-
     exclude(absorbs(C), ZHs, Hs),
     exclude(absorbs(C), ZTs, Ts),
+
     !,
     absorb_([C | Hs], Ts, Result).
 
@@ -294,9 +321,8 @@ bcf(TVL, Result) :-
 bcf_(TVL, Result) :-
     TVL = [H | _],
     functor(H, term, Arity),
-    length(Is, Arity),
     Index is Arity - 1,
-    findall(N, between(0, Index, N), Is),
+    numlist(0, Index, Is),
     foldl( [I, V0, V1] >> ( implicants(I, V0, Implicants)
                           , union(V0, Implicants, V1)
                           )
@@ -317,9 +343,10 @@ implicants_(I, Hs, [C | ZTs], ZAcc, Result) :-
                          -> V1 = [Consensus | V0]
                          ;  V1 = V0
                          )
-        , Hs, [], Implicants),
+        , Hs, [], Implicants ),
    
    append(ZAcc, Implicants, Acc),
+
    !,
    implicants_(I, [CVars | Hs], ZTs, Acc, Result). 
 
@@ -331,7 +358,6 @@ consensus(Index, AVars, BVars, Consensus) :-
     nth0(Index, BVars, V1),
     nonvar(V1),
     V0 =\= V1,
-
 
     copy_term(AVars, DAVars),
     copy_term(BVars, DBVars),
@@ -352,9 +378,9 @@ consensus(Index, AVars, BVars, Consensus) :-
 % tautology/1
 % tautology(TVL)
 tautology([Term]) :-
-    Term =.. [term | Vars],
-    maplist(var, Vars),
-    !.
+    Term =.. [term | Vars]
+ ->
+    maplist(var, Vars).
 tautology(TVL) :-
     complement(TVL, []).
 
@@ -367,11 +393,10 @@ quotient([], _B, []) :- !.
 quotient(As, B, Quotient) :-
     B =.. [term | Bs], 
  	foldl( [A, V0, V1] >> (  do_quotient(A, Bs, Result)
-                          ,  \+ compound_name_arity(Result, term, 0)
                           -> V1 = [Result | V0]
                           ;  V1 = V0
                           )
-             , As, [], ZQuotient ),
+         , As, [], ZQuotient ),
 
     absorb(ZQuotient, Quotient).
 
@@ -381,38 +406,68 @@ quotient(As, B, Quotient) :-
 %     Bs, tvl
 %     Result, term compound
 %
-%     term() as the empty set
+%     fail as the empty set
 do_quotient(As, Ys, Result) :-
-    As =.. [term | Xs],  
-    do_quotient_(Xs, Ys, [], ZResult),
-    compound_name_arguments(Result, term, ZResult).
+    As =.. [term | Xs],
+
+      do_quotient_(Xs, Ys, ZResult)
+    unless
+      [] = ZResult
+
+    , Result =.. [term | ZResult].
 
 % do_quotient_/4
 % do_quotient_(+Xs, +Ys, +Acc, -Result) is det
-do_quotient_([], [], Result, Result) :- !.
-do_quotient_([X | Xs], [Y | Ys], ZAcc, Result) :-
+do_quotient_([], [], []).
+do_quotient_([X | Xs], [Y | Ys], [X | Result]) :-
     var(Y),
-    append(ZAcc, [X], Acc),
+
     !,
-    do_quotient_(Xs, Ys, Acc, Result).
-do_quotient_([X | Xs], [_Y | Ys], ZAcc, Result) :-
-    var(X),
+    do_quotient_(Xs, Ys, Result).
+do_quotient_([X | Xs], [Y | Ys], Result) :-
+    ( 
+      var(X)
+    ; 
+      X =:= Y
+    ),
+
     !,
-    do_quotient_(Xs, Ys, ZAcc, Result).
-do_quotient_([X | _Xs], [Y | _Ys], _Acc, Result) :-
-    X =\= Y, 
-    !,
-    do_quotient_([], [], [], Result).
-do_quotient_([X | Xs], [X | Ys], ZAcc, Result) :-
-    % X =:= Y
-    !,
-    do_quotient_(Xs, Ys, ZAcc, Result).
+    do_quotient_(Xs, Ys, Result).
 
 % quotient_nth/3
 % quotient_nth(Index, Val, TVL, Result)
 quotient_nth(Index, Val, TVL, Result) :-
     term_nth(Index, Val, TVL, Term),
     quotient(TVL, Term, Result).
+
+
+% Conjunctive eliminant
+
+% econ/3
+% econ(+TVL, +Term, -Result) is det
+econ([], _Term, []) :- !.
+econ(TVL, Term, Result) :-
+   Term =.. [term | TVars],
+   bagof( Index, ( nth1(Index, TVars, EIndex)
+                 , nonvar(EIndex)
+                 )
+        , Is ),
+   bcf(TVL, BCF),
+   exclude(econ_(Is), BCF, ZResult),
+   edis(ZResult, Term, Result).
+
+econ_(Is, IN) :-
+    once( ( member(I, Is)
+          , IN =.. [term | Vals]
+          , nth1(I, Vals, Val), nonvar(Val)
+          )
+        ). 
+
+% econ_nth/3
+% econ_nth(+Index, +TVL, -Result)
+econ_nth(Index, TVL, Result) :- 
+    term_nth(Index, 1, TVL, Term),
+    econ(TVL, Term, Result).   
 
 
 % Disjunctive eliminant
@@ -424,7 +479,6 @@ edis(TVL, Term, Result) :-
    Term =.. [term | TVars],
    foldl( [IN, V0, V1] >> (  
                              edis_(IN, TVars, ETerm)
-                          ,  \+ compound_name_arity(ETerm, term, 0)
                           -> V1 = [ETerm | V0]
                           ;  V1 = V0
                           )
@@ -434,17 +488,25 @@ edis(TVL, Term, Result) :-
 
 % edis_/3
 % edis_(+Term, +Eliminant, -Result) is det
+%
+%     fail as the empty set
 edis_(Term, EVars, Result) :-
     Term =.. [term | TVars],
 
-    foldl( [T, E, V0, V1] >> (  
-                                var(E)
-                             -> append(V0, [T], V1)
-                             ;  V1 = V0
-                             )
-         , TVars, EVars, [], Vars),
-    
-    compound_name_arguments(Result, term, Vars).
+      do_edis_(TVars, EVars, Vars)
+    unless 
+      [] = Vars
+      
+    , Result =.. [term | Vars].
+
+
+do_edis_([], [], []).
+do_edis_([TVar | TVars], [EVar | EVars], [TVar | Result]) :-
+    var(EVar),
+    !,
+    do_edis_(TVars, EVars, Result).
+do_edis_([_TVar | TVars], [_EVar | EVars], Result) :-
+    do_edis_(TVars, EVars, Result).
 
 
 % edis_nth/3
@@ -470,6 +532,7 @@ nearly_minimal(TVL, Result) :-
                                 ,  term_xvar(Termx, Term)
  
                                 ,  quotient(VT, Term, Q)
+
                                 ,  tautology(Q)
                                 -> V1x = VTx
                                 ;  V1x = V0x
@@ -535,7 +598,7 @@ interval(ONSet, OFFSet) :-
 %    minimal u-determining subsets
 
 % minimal_subsets/3
-% minimal_subsets(ONSet, OFFSet, Sets)
+% minimal_subsets(+ONSet, +OFFSet, -Sets)
 minimal_subsets(QAs, QCAs, Sets) :-
     QAs = [H | _],
     functor(H, term, Arity),
@@ -550,7 +613,7 @@ minimal_subsets(QAs, QCAs, Sets) :-
                         (
                           opposed(Arity, Vars, B, Opposed)
                         , (
-                             Opposed == []
+                             [] = Opposed
                           -> V1 = V0
                           ;  (
                                intersection(V0, Opposed, ZV1)
@@ -565,6 +628,7 @@ minimal_subsets(QAs, QCAs, Sets) :-
 
    absorb(ZSets, Sets).
 
+% opposed(+Arity, +As, +Bs, -Result)
 opposed(Arity, As, Bs, Result) :-
     opposed_(As, Bs, 1, [], ZResult),
     maplist( [IN, OUT] >> (
@@ -573,7 +637,7 @@ opposed(Arity, As, Bs, Result) :-
                           )
            , ZResult, Result ).
 
-opposed_([], [], _Index, Result, Result):- !.
+% opposed_(+As, +Bs, +Index, +Acc, -Result)
 opposed_([A | As], [B | Bs], ZIndex, ZAcc, Result) :-
     ( 
        (
@@ -585,8 +649,10 @@ opposed_([A | As], [B | Bs], ZIndex, ZAcc, Result) :-
     ;  Acc = ZAcc
     ),
     Index is ZIndex + 1, 
+
     !,
     opposed_(As, Bs, Index, Acc, Result).
+opposed_([], [], _Index, Result, Result).
   
   
 % Conversion
@@ -596,7 +662,7 @@ opposed_([A | As], [B | Bs], ZIndex, ZAcc, Result) :-
 
 % swaps atom x and var
 varx(X, x) :- var(X), !.
-varx(1, 1) :- !.
+varx(1, 1).
 varx(0, 0).
 
 % TVL scoped
@@ -604,8 +670,8 @@ tvl_varx(TVL, Result) :-
     maplist(term_varx, TVL, Result).
 
 tvl_xvar(TVL, Result) :-
-   maplist(term_xvar, TVL, Result).
-
+    maplist(term_xvar, TVL, Result).
+  
 % On terms
 term_varx(Term, Result) :-
     Term =.. [term | TVars],
@@ -634,7 +700,7 @@ fact_to_tvl(Generator, TVL) :-
                    )
            , ZTVL ),
 
-   orthogonal(ZTVL, TVL).
+    orthogonal(ZTVL, TVL).
  
 % tvl_to_fact/2  
 % tvl_to_fact(+TVL, :Functor) is det
@@ -665,8 +731,8 @@ karnaugh_map(ON, OFF, Arity) :-
     VarCol is Arity - VarRow,
     Rows is (2 ^ VarRow) - 1,
     Cols is (2 ^ VarCol) - 1,
-    findall(Count, between(0, Rows, Count), RowBinary),
-    findall(Count, between(0, Cols, Count), ColBinary),
+    numlist(0, Rows, RowBinary),
+    numlist(0, Cols, ColBinary),
     maplist(binary_to_graychars(VarRow), RowBinary, RowChars),
     maplist(binary_to_graychars(VarCol), ColBinary, ColChars),
 
@@ -698,20 +764,16 @@ wmv(Col, Row, ONSet, OFFSet) :-
            , CodeChars, Code ),
 
     Term =.. [term | Code], 
-    (  
-     (
-        memberchk(Term, ONSet)
-     ,  memberchk(Term, OFFSet)
-     )
-     -> write(x)
-     ;  (
-           memberchk(Term, ONSet)
-        -> write(1)
-        ;    memberchk(Term, OFFSet)
-          -> write(0)
-          ;  write(-)
-        )
-    ).
+
+    =memberchk(Term, ONSet, ON),
+    =memberchk(Term, OFFSet, OFF),
+    wmv_(ON, OFF).
+
+wmv_(1, 1) :- write(x).
+wmv_(1, 0) :- write(1).
+wmv_(0, 1) :- write(0).
+wmv_(0, 0) :- write(-).
+
 
 % binary_to_graychars/3
 % binary_to_graychars(+Len, +Binary, -Gray)

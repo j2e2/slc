@@ -31,7 +31,7 @@ In this library a *TVL* represents a *SOP*, Sum Of Products, if no else stated.
 
 
 ## Boolean equations
-**( quotient, quotient_nth, edis, edis_nth, absorb, bcf, nearly_minimal, minimal_subsets )**
+**( quotient, quotient_nth, edis, edis_nth, econ, econ_nth, absorb, bcf, nearly_minimal, minimal_subsets )**
 
 
 

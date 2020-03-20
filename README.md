@@ -47,9 +47,9 @@ Parens are based on lists, so our parens are square parens.
 
 
 ## Additional operators and terms
-**( x[], xn )**
+**( x[ ], xn )**
 
-**x[]** : xor operation, could use parens.
+**x[ ]** : xor operation, could use parens.
 
 **xn** : dual of xor.
 
