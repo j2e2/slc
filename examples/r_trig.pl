@@ -10,7 +10,6 @@
    20170814
 */
 
-:- use_module(library(slc)).
 
 % r_trig
 %     rising edge evaluation

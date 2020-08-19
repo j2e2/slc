@@ -1,11 +1,12 @@
 /*
     cal.pl
 
-    Switching logic circuit
-    extend slc via arbitrary prolog terms
-    provides IEC CAL semantics
+        Switching logic circuit
+        extend slc via arbitrary prolog terms
+        provides IEC CAL semantics
 
     (c) 2017, xae. Juan José Eraso Escalona
+    
     20170814
 */
 

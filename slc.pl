@@ -1,8 +1,8 @@
 /*
     slc.pl
 
-    Switching logic circuit
-    slc interpreter and operators
+        Switching logic circuit
+        slc interpreter and operators
 
    (c) 2016, xae. Juan José Eraso Escalona
    
@@ -14,7 +14,7 @@
 
 :- module('slc',
             [ slc/1
-              , op(100, fx, [a, an, o, on, x, xn, =, \=])
+            , op(100, fx, [a, an, o, on, x, xn, =, \=])
             ]
 ).
 

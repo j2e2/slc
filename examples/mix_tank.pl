@@ -11,13 +11,6 @@
    20160821
 */
 
-:- module('xae_mix_tank',
-          [ mix_tank/11 
-          , mix_tank_swrpmp/8
-          ]).
-
-:- use_module(library(slc)).
-
 
 % LD circuit
 %    Best with a fixed font

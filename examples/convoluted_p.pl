@@ -11,8 +11,6 @@
 */
 
 
-:- use_module(library(slc)).
-
 % Program in (pseudo) AWL,
 %
 %     UN   CLK
@@ -40,7 +38,7 @@
 
 convoluted_p(CLK, ZCLK_F, CLK_F, ZQ, Q) :-
           slc([
-                an  CLK
+                an  CLK,
                 s  (ZCLK_F, M),   % Store that CLK was false
                 a   ZQ,
                 r  (M, CLK_F),    % Clear on rising edge

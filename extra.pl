@@ -1,17 +1,17 @@
 /*
     extra.pl
 
-    Switching logic circuit
-    slc interpreter additional operators and terms
+        Switching logic circuit
+        slc interpreter additional operators and terms
      
-     s/2, s/1: set
-     r/2, r/1: reset
+            s/2, s/1: set
+            r/2, r/1: reset
 
-     p: rising edge
-     n: falling edge
+            p: rising edge
+            n: falling edge
 
-     set: RLO = 1
-     clr: RLO = 0
+            set: RLO = 1
+            clr: RLO = 0
 
    (c) 2017, xae. Juan José Eraso Escalona
 

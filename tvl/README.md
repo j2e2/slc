@@ -9,7 +9,7 @@ Also see the *XBOOLE* tool at http://www.informatik.tu-freiberg.de/xboole.
 
 # Introduction
 
-A *TVL* is a list of type *term* compounds.
+A *TVL* is a list of type *term* compounds of dicts.
 
 Represents a conjuction/disjuction of boolean terms, is a boolean equation.
 
@@ -26,17 +26,17 @@ In this library a *TVL* represents a *SOP*, Sum Of Products, if no else stated.
 
 
 ## Prolog interface
-**( fact_to_tvl, tvl_to_fact, tvl_to_list )**
+**( to_fact, from_fact )**
 
 
 
 ## Boolean equations
-**( quotient, quotient_nth, edis, edis_nth, econ, econ_nth, absorb, bcf, nearly_minimal, minimal_subsets )**
+**( quotient, absorb, bcf, nearly_minimal )**
 
 
 
 ## Other
-**( on_set, off_set, on_mark, off_mark, interval, karnaugh_map )**
+**( on_set, off_set, on_mark, off_mark, interval, minimal_subsets, karnaugh_map )**
 
 
 

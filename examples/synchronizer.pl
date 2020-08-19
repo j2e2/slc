@@ -8,14 +8,6 @@
     20160814
 */
 
-:- module('xae_synchronizer',
-            [ synchronizer/5 
-            , security/2
-            , liveness/2 
-            ]
-).
-
-:- use_module(library(slc)).
 
 % LD circuit
 %    Best with a fixed font
