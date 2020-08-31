@@ -63,16 +63,12 @@ intersection(As, Bs, Intersections) :-
     from_dict(Keys, MAs, As_t),
     from_dict(Keys, MBs, Bs_t),
 
-
-    to_list(As_t, VAs),
-    to_list(Bs_t, VBs),
-    intersection_(VAs, VBs, [], ZIntersections),
+    intersection_t(As_t, Bs_t, ZIntersections),
 
     to_dict(ZIntersections, Keys, Intersections).
 
 % intersection_/4
 % intersection_(+As, +Bs, +Acc, -Intersections) is det
-intersection_([], _Bs, Acc, Acc) :- !.
 intersection_([A | As], Bs, ZAcc, Intersections) :-
 	foldl( [B, V0, V1] >> ( 
                              intersect(A, B, Result)
@@ -83,6 +79,15 @@ intersection_([A | As], Bs, ZAcc, Intersections) :-
 
     !,
 	intersection_(As, Bs, Acc, Intersections).
+intersection_([], _Bs, Acc, Acc).
+
+intersection_t([], _Bs, []) :- !.
+intersection_t(_As, [], []) :- !.
+intersection_t(As, Bs, Intersections) :-
+    to_list(As, VAs),
+    to_list(Bs, VBs),
+    intersection_(VAs, VBs, [], Intersections).
+
 
 % intersect/3
 % intersect(+As, +Bs, -Result) is semidet
@@ -97,7 +102,6 @@ intersect(As, Bs, Result) :-
 
 % intersect_/3
 % intersect_(+Xs, +Ys, -Result) is semidet
-intersect_([], [], []).
 intersect_([X | Xs], [Y | Ys], [Y | ZResult]) :-
     var(X),
 
@@ -112,6 +116,7 @@ intersect_([X | Xs], [Y | Ys], [X | ZResult]) :-
 
     !,
     intersect_(Xs, Ys, ZResult).
+intersect_([], [], []).
 
 % Complement
 %           _______
@@ -132,42 +137,44 @@ complement(TVL, Complements) :-
 
     As = [H | Ts],
     complement_(H, Unity_t),
-    to_dict(Unity_t, Keys, Unity),
 
     % Complements intersection
     foldl( [A, V0, V1] >> ( 
-                             complement_(A, ZResults)
-                          ,  to_dict(ZResults, Keys, Results)
-			              ,  intersection(V0, Results, V1)
+                             complement_(A, Results)
+			              ,  intersection_t(V0, Results, V1)
                           )
-         , Ts, Unity, Complements ).
+         , Ts, Unity_t, Complements_t ),
+    to_dict(Complements_t, Keys, Complements).
 
 % complement_/2
 % complement_(+Vars, -Results) is det
 %     Complements a term
 complement_(Term, Results) :-
     Term =.. [term | Vars],
-    % Term length
-    length(Vars, Len),
-    % Upto a concrete var
-    findall(Head, append(Head, X, Vars) until X = [_], Heads), 
-    % Complement var
-    foldl( [H, V, V0, V1] >> (
-                                var(V)
-                             -> V1 = V0
-                             ;  ( 
-                                   do_complement(V, C)
-                                ,  append(H, [C], HC)
+    complement_([], Vars, Results).
 
-                                % Extend upto term length 
- 				                ,  append(HC, _, Args)
-                                ,  length(Args, Len) 
+% complement_/3
+% complement_(+Heads, +Tails, -Results) is det
+%     Complements a term variable
+complement_(ZHeads, [Var | Tails], Results) :-
+    var(Var),
+    append(ZHeads, [Var], Heads),
 
-                                ,  Complement =.. [term | Args]
-                                ,  V1 = [Complement | V0]
-                                )
-                             )
-         , Heads, Vars, [], Results ).
+    !,
+    complement_(Heads, Tails, Results).
+complement_(ZHeads, [Var | Tails], [Result | Results]) :-
+    append(ZHeads, [Var], Heads),
+    
+    do_complement(Var, Complement),    
+
+    length(Tails, Len),
+    length(Abbutal, Len),
+    append(ZHeads, [Complement | Abbutal], ZResult),
+    Result =.. [term | ZResult],
+
+    !,
+    complement_(Heads, Tails, Results).
+complement_(_Heads, [], []).
 
 % do_complement/2
 % do_complement(+Val, -Result) is det
@@ -215,13 +222,13 @@ absorb(TVL, Result) :-
     TVLS = [H | Ts],
     absorb_([H], Ts, Result).
 
-absorb_(Result, [], Result) :- !.   
 absorb_(ZHs, [C | ZTs],  Result) :-
     exclude(absorbs(C), ZHs, Hs),
     exclude(absorbs(C), ZTs, Ts),
 
     !,
     absorb_([C | Hs], Ts, Result).
+absorb_(Result, [], Result).   
 
 absorbs(A, B) :-
     subsumes_term(A, B).

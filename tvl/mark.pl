@@ -100,37 +100,31 @@ minimal_subsets(QAsd, QCAsd, Setsd) :-
    % Cast
    to_dict(Sets, Keys, Setsd).
 
+% opposed/4
 % opposed(+Arity, +As, +Bs, -Result)
 opposed(Arity, As, Bs, Result) :-
-    opposed_(As, Bs, 1, [], ZResult),
+    opposed_(As, Bs, 1, ZResult),
     maplist( [IN, OUT] >> (
                             functor(OUT, term, Arity)
                           , setarg(IN, OUT, 1)
                           )
            , ZResult, Result ).
 
-% opposed_(+As, +Bs, +Index, +Acc, -Result)
-opposed_([A | As], [B | Bs], ZIndex, ZAcc, Result) :-
-    ( 
-       (
-          nonvar(A)
-       ,  nonvar(B)
-       ,  A =\= B
-       )       
-    -> Acc = [ZIndex | ZAcc]
-    ;  Acc = ZAcc
-    ),
-    Index is ZIndex + 1, 
+% opposed_/4
+% opposed_(+As, +Bs, +Index, -Result)
+opposed_([A | As], [B | Bs], ZIndex, [ZIndex | Result]) :-
+    nonvar(A),
+    nonvar(B),
+    A =\= B,
+
+    Index is ZIndex + 1,
 
     !,
-    opposed_(As, Bs, Index, Acc, Result).
-opposed_([], [], _Index, Result, Result).
- 
-intersection_t([], _Bs, []) :- !.
-intersection_t(_As, [], []) :- !.
-intersection_t(As, Bs, Intersections) :-
-    to_list(As, VAs),
-    to_list(Bs, VBs),
-    intersection_(VAs, VBs, [], Intersections).
+    opposed_(As, Bs, Index, Result).
+opposed_([_A | As], [_B | Bs], ZIndex, Result) :-
+    Index is ZIndex + 1,
 
+    !,
+    opposed_(As, Bs, Index, Result).
+opposed_([], [], _Index, []).
 

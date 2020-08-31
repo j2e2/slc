@@ -43,7 +43,6 @@ implicants(Index, [H | Ts], Result) :-
    implicants_(Index, [HVars], Ts, [], Result).
 
 % implicants_/5
-implicants_(_I, _Hs, [], Result, Result) :- !.
 implicants_(I, Hs, [C | ZTs], ZAcc, Result) :-
    C =.. [term | CVars],
    foldl( [H, V0, V1] >> (
@@ -51,12 +50,12 @@ implicants_(I, Hs, [C | ZTs], ZAcc, Result) :-
                          -> V1 = [Consensus | V0]
                          ;  V1 = V0
                          )
-        , Hs, [], Implicants ),
-   
-   append(ZAcc, Implicants, Acc),
+        , Hs, ZAcc, Acc ),
+
 
    !,
    implicants_(I, [CVars | Hs], ZTs, Acc, Result). 
+implicants_(_I, _Hs, [], Result, Result).
 
 % consensus
 % consensus/4

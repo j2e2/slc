@@ -19,8 +19,6 @@
 user:file_search_path(examples, 'examples').
 
 
-:- ensure_loaded(library(until)).
-
 :- ensure_loaded(ops).
 
 % Additional operators and terms
