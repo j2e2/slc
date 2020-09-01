@@ -73,6 +73,7 @@ minimal_subsets(QAsd, QCAsd, Setsd) :-
     QAs = [H | _],
     functor(H, term, Arity),
     functor(Unity, term, Arity),
+    numlist(1, Arity, Indexes),
 
     to_list(QAs, Qs),
     
@@ -81,50 +82,37 @@ minimal_subsets(QAsd, QCAsd, Setsd) :-
                QCA =.. [term | Vars]
              , foldl( [B, V0, V1] >> 
                         (
-                          opposed(Arity, Vars, B, Opposed)
-                        , (
-                             [] = Opposed
-                          -> V1 = V0
-                          ;  (
-                               intersection_t(V0, Opposed, ZV1)
-                             , absorb(ZV1, V1)
-                             )
-                          )
-                       )
+                          opposed(Arity, Indexes, Vars, B, Opposed)
+                        , intersection_t(V0, Opposed, ZV1)
+                        , absorb(ZV1, V1)
+                        )
                     , Qs, [Unity], OUT)
-            )
-          , QCAs, [HO | TOs] ),
+             )
+           , QCAs, [HO | TOs] ),
    foldl(intersection_t, TOs, HO, ZSets),
    absorb(ZSets, Sets),
 
    % Cast
    to_dict(Sets, Keys, Setsd).
 
-% opposed/4
-% opposed(+Arity, +As, +Bs, -Result)
-opposed(Arity, As, Bs, Result) :-
-    opposed_(As, Bs, 1, ZResult),
-    maplist( [IN, OUT] >> (
-                            functor(OUT, term, Arity)
-                          , setarg(IN, OUT, 1)
-                          )
-           , ZResult, Result ).
+% opposed/5
+% opposed(+Arity, +Indexes, +As, +Bs, -Result)
+opposed(Arity, Indexes, As, Bs, Result) :-
+    foldl( [A, B, Index, V0, V1] >> (
+                                       opposed(A, B)
+                                    -> (
+                                         functor(OUT, term, Arity)
+                                       , setarg(Index, OUT, 1)
+                                       , V1 = [OUT | V0]
+                                       )
+                                    ;  V1 = V0
+                                    )
+         , As, Bs, Indexes, [], Result ).
 
-% opposed_/4
-% opposed_(+As, +Bs, +Index, -Result)
-opposed_([A | As], [B | Bs], ZIndex, [ZIndex | Result]) :-
+% opposed/2
+% opposed(+A, +B)
+opposed(A, B) :-
     nonvar(A),
     nonvar(B),
-    A =\= B,
-
-    Index is ZIndex + 1,
-
-    !,
-    opposed_(As, Bs, Index, Result).
-opposed_([_A | As], [_B | Bs], ZIndex, Result) :-
-    Index is ZIndex + 1,
-
-    !,
-    opposed_(As, Bs, Index, Result).
-opposed_([], [], _Index, []).
+    A =\= B.
 
