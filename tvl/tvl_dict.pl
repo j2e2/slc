@@ -34,6 +34,7 @@ from_dict(Keys, TVL_d, TVL_t) :-
 
 % to_dict/3
 % to_dict(+TVL_t, +Keys, -TVL_d)
+to_dict([], _Keys, []) :- !.
 to_dict(TVL_t, Keys, TVL_d) :-
      to_list(TVL_t, TVL_l),
 
