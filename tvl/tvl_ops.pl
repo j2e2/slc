@@ -242,13 +242,26 @@ quotient([], _B, []) :- !.
 quotient(As, B, Quotient) :-
     foldl( [term(A), V0, V1] >> ( 
                                   copy_term(B, CB)
-                                , copy_term(A, CA)
-                                ,  select_dict(CB, CA, Result)
-                                -> V1 = [term(Result) | V0]
-                                ;  V1 = V0
+                                , copy_term(A, CA)  
+                                
+                                , (
+                                     select_dict(CB, CA, Result)
+                                  -> V1 = [term(Result) | V0]
+                                  ;  V1 = V0
+                                  )
                                 )
          , As, [], ZQuotient ),
 
     absorb(ZQuotient, Quotient).
+
+
+% delete_term/3
+% delete_term(+Term, +TVL, -Result)
+%   Select term without grounding 
+delete_term(Term, TVL, Result) :-
+    exclude( [IN] >> (
+                       \+ (\+ Term = IN)
+                     )
+           , TVL, Result).     
 
 

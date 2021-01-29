@@ -97,14 +97,17 @@ nearly_minimal(TVL, Result) :-
     bcf(TVL, BCFS),
 
     foldl( [Term, V0, V1] >> (
-                               selectchk(Term, V0, VT)
-                             , Term = term(Dsor)
+                               delete_term(Term, V0, VT)
+                             , Term = term(ADsor)
+                             , grounded_dict(ADsor, Dsor)
                              , quotient(VT, Dsor, Q)
 
-                             ,  tautology(Q)
-                             -> V1 = VT
-                             ;  V1 = V0
+                             , (
+                                  tautology(Q)
+                               -> V1 = VT
+                               ;  V1 = V0
+                               )                        
                              )
          , BCFS, BCFS, Result ).
-
+      
 

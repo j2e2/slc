@@ -49,8 +49,9 @@ to_dict(TVL_t, Keys, TVL_d) :-
                )
             , TVL_l, TVL_d ).
      
-% keys
-% Dict keys
+     
+% keys/Valued
+% Dict keys/values
 
 % keys/2
 % keys(+TVL_d, -Keys)
@@ -72,6 +73,23 @@ values(Keys, [Term | _], Values) :-
                              get_dict(Key, Vals, Val)
                            )
            , Keys, Values ). 
+           
+
+% grounded_dict   
+% grounded_dict(+Dict, -Result)        
+%   No vars as values
+
+% grounded_dict/2
+% grounded_dict(+Dict, -Result)
+grounded_dict(Dict, Result) :-
+    dict_pairs(Dict, _, Pairs),
+    exclude( [(_Key-Val)] >> (
+                              var(Val)
+                             )
+           , Pairs, Grounded ),
+    dict_create(Result, _, Grounded).
+    
+    
                                                                
 % match
 %   Match a TVL with a dict
@@ -86,6 +104,7 @@ match( TVL, From, Matched) :-
                                   , OUT =.. [term | [CFrom]]
                                   )
            , TVL, Matched ).    
+
 
 % unity_dict
 %   Dict of ungrounded values

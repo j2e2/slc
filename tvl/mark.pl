@@ -14,8 +14,7 @@
 on_set(Index, TVL, Result) :-
     mark(Index, 0, TVL, ON),  
     mark(Index, 1, TVL, OFF),
-    difference(ON, OFF, ZResult),
-    nearly_minimal(ZResult, Result).
+    difference(ON, OFF, Result).
 
 % off_set
 % off_set/3
@@ -23,8 +22,7 @@ on_set(Index, TVL, Result) :-
 off_set(Index, TVL, Result) :-
     mark(Index, 0, TVL, ON),  
     mark(Index, 1, TVL, OFF),
-    difference(OFF, ON, ZResult),
-    nearly_minimal(ZResult, Result).
+    difference(OFF, ON, Result).
 
 % on_mark
 % on_mark/3
@@ -44,8 +42,7 @@ off_mark(Index, TVL, Result) :-
 mark(Index, Val, TVL, Result) :-    
     dict_create(Dsor, _, [Index:Val]),
     quotient(TVL, Dsor, Q),
-    complement(Q, ZResult),
-    nearly_minimal(ZResult, Result).
+    complement(Q, Result).
 
 % interval
 % interval/2   
