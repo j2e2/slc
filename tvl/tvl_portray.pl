@@ -5,6 +5,7 @@
    (c) 2020, xae. Juan José Eraso Escalona
  
    20200811
+   20210221: Dict version
 */
 
     
@@ -22,11 +23,19 @@ user:portray(term(Term)) :-
            (
               nonvar(Value)
            -> (
-                 Value = 1
-              -> format(' ~w', Key)
-              ;  format(' ~~~w', Key)
+                 Value =:= 0  
+              -> format(' ~~~w', Key)
+              ;  format('  ~w', Key)
               )
            ;  true
-           )
-        ).
+           ) ).
+           
+user:portray(Term) :-
+    functor(Term, term, _Arity),
+    copy_term(Term, CTerm),
+    numbervars(CTerm, 0, _, [singletons(true)]),
+    CTerm =.. [_ | Args],
+    nl, write(' '), write(Args).
+    
+    
 

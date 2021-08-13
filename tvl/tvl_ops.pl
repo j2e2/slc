@@ -20,17 +20,15 @@ union(As, Bs, Unions) :-
     % Keys union
     keys(As, AKeys),
     keys(Bs, BKeys),
-    lists:union(AKeys, BKeys, Keys),
+    ord_union(AKeys, BKeys, Keys),
 
     % Match TVL's
     unity_dict(Keys, From),
 
-    match(As, From, MAs),
-    match(Bs, From, MBs),
-
     % Values union
-    append(MAs, MBs, ZUnions),
-    absorb(ZUnions, Unions).
+    append(As, Bs, ZMs),
+    absorb(ZMs, Ms),
+    match(Ms, From, Unions).
     
 
 % Intersection
@@ -51,7 +49,7 @@ intersection(As, Bs, Intersections) :-
     % Keys union
     keys(As, AKeys),
     keys(Bs, BKeys),
-    lists:union(AKeys, BKeys, Keys),
+    ord_union(AKeys, BKeys, Keys),
 
     % Match TLV's
     unity_dict(Keys, From),
@@ -60,26 +58,29 @@ intersection(As, Bs, Intersections) :-
     match(Bs, From, MBs),
 
     % Intersection
-    from_dict(Keys, MAs, As_t),
-    from_dict(Keys, MBs, Bs_t),
+    from_dict(MAs, Keys, As_t),
+    from_dict(MBs, Keys, Bs_t),
 
-    intersection_t(As_t, Bs_t, ZIntersections),
+    intersection_t(As_t, Bs_t, Intersections_t),
+    
+    absorb(Intersections_t, ZIntersections),
 
     to_dict(ZIntersections, Keys, Intersections).
 
 % intersection_/4
 % intersection_(+As, +Bs, +Acc, -Intersections) is det
-intersection_([A | As], Bs, ZAcc, Intersections) :-
-	foldl( [B, V0, V1] >> ( 
-                             intersect(A, B, Result)
-                          -> V1 = [Result | V0]
-                          ;  V1 = V0
-                          )
-         , Bs, ZAcc, Acc ),
-
-    !,
-	intersection_(As, Bs, Acc, Intersections).
 intersection_([], _Bs, Acc, Acc).
+intersection_([A | As], Bs, ZAcc, Intersections) :-
+	intersection_term(Bs, A, ZAcc, Acc),
+	intersection_(As, Bs, Acc, Intersections).
+
+intersection_term([], _A, Acc, Acc).     
+intersection_term([B | Bs], A, ZAcc, Acc) :-
+     intersect(A, B, Result)
+  -> 
+     intersection_term(Bs, A, [Result | ZAcc], Acc) 
+  ;
+     intersection_term(Bs, A, ZAcc, Acc).
 
 intersection_t([], _Bs, []) :- !.
 intersection_t(_As, [], []) :- !.
@@ -87,7 +88,6 @@ intersection_t(As, Bs, Intersections) :-
     to_list(As, VAs),
     to_list(Bs, VBs),
     intersection_(VAs, VBs, [], Intersections).
-
 
 % intersect/3
 % intersect(+As, +Bs, -Result) is semidet
@@ -118,6 +118,7 @@ intersect_([X | Xs], [Y | Ys], [X | ZResult]) :-
     intersect_(Xs, Ys, ZResult).
 intersect_([], [], []).
 
+
 % Complement
 %           _______
 %            _ | _
@@ -130,39 +131,40 @@ intersect_([], [], []).
 %    Arguments as tvl's
 complement([], _Complements) :- !, fail.
 complement(TVL, Complements) :-
-    absorb(TVL, TVLA),
     % Cast
-    keys(TVLA, Keys),
-    from_dict(TVLA, As),
+    keys(TVL, Keys),
+    from_dict(TVL, Keys, As),
 
     As = [H | Ts],
-    complement_(H, Unity_t),
+    complement_t(H, Unity_t),
 
     % Complements intersection
-    foldl( [A, V0, V1] >> ( 
-                             complement_(A, Results)
-			              ,  intersection_t(V0, Results, V1)
-                          )
-         , Ts, Unity_t, Complements_t ),
+    complement_intersection(Ts, Unity_t, Complements_t),
     to_dict(Complements_t, Keys, Complements).
 
-% complement_/2
-% complement_(+Vars, -Results) is det
+complement_intersection([], Result, Result) :- !.
+complement_intersection([A | As], ZAcc, Result) :-
+    complement_t(A, CA),
+    intersection_t(ZAcc, CA, Acc),
+    complement_intersection(As, Acc, Result).
+    
+% complement_t/2
+% complement_t(+Vars, -Results) is det
 %     Complements a term
-complement_(Term, Results) :-
+complement_t(Term, Results) :-
     Term =.. [term | Vars],
-    complement_([], Vars, Results).
+    complement_(Vars, [], Results).
 
 % complement_/3
 % complement_(+Heads, +Tails, -Results) is det
 %     Complements a term variable
-complement_(ZHeads, [Var | Tails], Results) :-
+complement_([Var | Tails], ZHeads, Results) :-
     var(Var),
     append(ZHeads, [Var], Heads),
 
     !,
-    complement_(Heads, Tails, Results).
-complement_(ZHeads, [Var | Tails], [Result | Results]) :-
+    complement_(Tails, Heads, Results).
+complement_([Var | Tails], ZHeads, [Result | Results]) :-
     append(ZHeads, [Var], Heads),
     
     do_complement(Var, Complement),    
@@ -172,16 +174,15 @@ complement_(ZHeads, [Var | Tails], [Result | Results]) :-
     append(ZHeads, [Complement | Abbutal], ZResult),
     Result =.. [term | ZResult],
 
-    !,
-    complement_(Heads, Tails, Results).
-complement_(_Heads, [], []).
+    complement_(Tails, Heads, Results).
+complement_([], _Heads, []).
 
 % do_complement/2
 % do_complement(+Val, -Result) is det
 %     Complements a three valued logic value 
 %
 %     Don't cares as nongrounded values
-do_complement(0, 1) :- !.
+do_complement(0, 1).
 do_complement(1, 0). 
  
 
@@ -217,18 +218,17 @@ orthogonal(TVL, [TopTerm | OrthogonalTail]) :-
 % absorb/2
 % absorb(+TVL, -Result)
 absorb([], []) :- !.
+absorb([Term], [Term]) :- !.
 absorb(TVL, Result) :-
     predsort(compare_term_des, TVL, TVLS),
     TVLS = [H | Ts],
-    absorb_([H], Ts, Result).
+    absorb_(Ts, [H], Result).
 
-absorb_(ZHs, [C | ZTs],  Result) :-
+absorb_([], Result, Result) :- !.   
+absorb_([C | ZTs], ZHs, Result) :-
     exclude(absorbs(C), ZHs, Hs),
     exclude(absorbs(C), ZTs, Ts),
-
-    !,
-    absorb_([C | Hs], Ts, Result).
-absorb_(Result, [], Result).   
+    absorb_(Ts, [C | Hs], Result).
 
 absorbs(A, B) :-
     subsumes_term(A, B).
@@ -238,30 +238,62 @@ absorbs(A, B) :-
 
 % quotient/3
 % quotient(+DEND, +DSOR, -QUOT) is det
-quotient([], _B, []) :- !.
-quotient(As, B, Quotient) :-
-    foldl( [term(A), V0, V1] >> ( 
-                                  copy_term(B, CB)
-                                , copy_term(A, CA)  
-                                
-                                , (
-                                     select_dict(CB, CA, Result)
-                                  -> V1 = [term(Result) | V0]
-                                  ;  V1 = V0
-                                  )
-                                )
-         , As, [], ZQuotient ),
-
-    absorb(ZQuotient, Quotient).
+quotient([], _B, []).
+quotient([term(A) | As], B, [term(Result) | Quotient]) :-
+    copy_term(B, CB),
+    copy_term(A, CA),
+    
+    select_dict(CB, CA, Result),
+    
+    !,
+    quotient_term(As, B, Quotient).    
+quotient([term(_) | As], B, Quotient) :-
+    quotient(As, B, Quotient).
 
 
 % delete_term/3
 % delete_term(+Term, +TVL, -Result)
 %   Select term without grounding 
 delete_term(Term, TVL, Result) :-
-    exclude( [IN] >> (
-                       \+ (\+ Term = IN)
-                     )
-           , TVL, Result).     
+    copy_term(TVL, From),
+    exclude(=(Term), From, Result).     
+           
+           
+% slice/3
+% slice(+Keys, +TVL, -Result)
+%   Only values for Keys 
+slice(Keys, TVL, Result) :-
+    sort(Keys, BKeys),
+    keys(TVL, AKeys),
+    ord_symdiff(AKeys, BKeys, QKeys),
+    unity_dict(QKeys, Q),
+    quotient(TVL, Q, Result).
 
+
+% Tautology
+
+% tautology/1
+% tautology(TVL)
+tautology(TVL) :-
+    complement(TVL, []).
+    
+    
+% subtract/3    
+% subtract(+Implementation, +Model, -NonConformes)
+subtract(Implementation, Model, NonConformes) :-
+    keys(Model, ModelKeys),
+    keys(Implementation, ImplementationKeys),
+    ord_union(ModelKeys, ImplementationKeys, Keys),
+
+    % Match TLV's
+    unity_dict(Keys, From),
+
+    match(Model, From, MModel),
+    match(Implementation, From, MImplementation),
+
+    exclude( [term(Term)] >> (
+                quotient(MModel, Term, Value)
+              , tautology(Value)
+                             )
+           , MImplementation, NonConformes ).  
 

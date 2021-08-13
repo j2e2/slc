@@ -13,8 +13,6 @@
 %    asc, last term of less number of vars
 
 % asc
-compare_term_asc(=, _E1, _E2) :-
-    fail.
 compare_term_asc(<, E1, E2) :-
     copy_term(E1, CE1),
     copy_term(E2, CE2),
@@ -24,8 +22,6 @@ compare_term_asc(<, E1, E2) :-
 compare_term_asc(>, _E1, _E2).
 
 %des
-compare_term_des(=, _E1, _E2) :-
-    fail.
 compare_term_des(>, E1, E2) :-
     copy_term(E1, CE1),
     copy_term(E2, CE2),
