@@ -18,7 +18,7 @@
    20170816
 */
 
-:- use_module(slc).
+:- use_module(library(slc)).
 
 % Extending
 :- op(100, fx, [ p, n, s, r ]).

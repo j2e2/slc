@@ -9,7 +9,7 @@
     20190612
 */
 
-:- use_module(slc).
+:- use_module(library(slc)).
 
 % Definitional method models
 

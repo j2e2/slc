@@ -19,6 +19,7 @@
 user:file_search_path(examples, 'examples').
 
 
+% SLC support
 :- ensure_loaded(ops).
 
 % Additional operators and terms
@@ -26,4 +27,13 @@ user:file_search_path(examples, 'examples').
 
 % Calling prolog terms support
 :- ensure_loaded(cal).
+
+
+% TVL library
+:- use_module(library(tvl)).
+
+% Applications
+:- autoload(library(mark)).
+:- autoload(library(bcf)).
+:- autoload(library(karnaugh)).
 
